@@ -264,36 +264,115 @@ class HomePage:
 class MyProfile:
     def __init__(self, master):
         self.master = master
-        master.geometry("500x500")
-        master.title("Edit Profile")
+        master.geometry("600x900")
+        master.title("Change User Info")
+        flabel = tk.Label(master, text="First Name:")
+        flabel.pack()
+        self.ftext_box = tk.Text(master, width=30,height=3)
+        self.ftext_box.pack()
         
-        self.button = tk.Button(master, text="See Friends", command=self.see_friends)
-        self.button.pack(pady=10)
+        llabel = tk.Label(master, text="Last Name:")
+        llabel.pack()
+        self.ltext_box = tk.Text(master, width=30,height=3)
+        self.ltext_box.pack()
         
-        self.button = tk.Button(master, text="Delete Photo or Album", command=self.back)
-        self.button.pack(pady=10)
+        self.elabel = tk.Label(master, text="Email:")
+        self.elabel.pack()
+        self.etext_box = tk.Text(master, width=30,height=3)
+        self.etext_box.pack()
         
-        self.button = tk.Button(master, text="See Contribution Score", command=self.see_cs)
-        self.button.pack(pady=10)
+      
+        self.passlabel = tk.Label(master, text="Password")
+        self.passlabel.pack()
+        self.passtext_box = tk.Text(master, width=30,height=3)
+        self.passtext_box.pack()
         
-        self.button = tk.Button(master, text="Back", command=self.back)
-        self.button.pack(pady=10)
+        self.htlabel = tk.Label(master, text="Hometown:")
+        self.htlabel.pack()
+        self.httext_box = tk.Text(master, width=30,height=3)
+        self.httext_box.pack()
         
-    def see_friends(self):
-        self.master.withdraw()  
-        self.newWindow = tk.Toplevel(self.master)  
-        self.app = FriendsList(self.newWindow) 
+        self.genlabel = tk.Label(master, text="Gender:")
+        self.genlabel.pack()
         
-    def see_cs(self):
-        self.master.withdraw()  
-        self.newWindow = tk.Toplevel(self.master)  
-        self.app = HomePage(self.newWindow)
+        gender_options = ["Male", "Female", "Other"]
+        self.selected_gender = tk.StringVar()
+        self.selected_gender.set(gender_options[0])
+        self.gender_menu = tk.OptionMenu(master, self.selected_gender, *gender_options)
+        self.gender_menu.pack()  
         
+        self.doblabel = tk.Label(master, text="Date of Birth:")
+        self.doblabel.pack()
+        self.dob_entry = DateEntry(master, width=15, background='darkblue',foreground='white', borderwidth=2)
+        self.dob_entry.pack(padx=10, pady=10)
+        
+        self.button = tk.Button(master, text="Create Your Account", command=self.get_input)
+        self.button.pack(pady=5)
+        
+        self.button = tk.Button(master, text="Back to Home", command=self.back)
+        self.button.pack(pady=5)
+    #  print(httext_box)
+     
     def back(self):
         self.master.withdraw()  
         self.newWindow = tk.Toplevel(self.master)  
+        self.app = WelcomeWindow(self.newWindow) 
+        
+    def switch_window(self):
+        self.master.withdraw() 
+        self.newWindow = tk.Toplevel(self.master) 
         self.app = HomePage(self.newWindow)
-       
+    def get_input(self):
+        fname = self.ftext_box.get(1.0, 'end-1c')
+        lname = self.ltext_box.get(1.0, 'end-1c')
+        email = self.etext_box.get(1.0, 'end-1c')
+        user_id = self.uidtext_box.get(1.0, 'end-1c')
+        hometown = self.httext_box.get(1.0, 'end-1c')
+        gender = self.selected_gender.get()
+        dob = self.dob_entry.get_date()
+        password = self.passtext_box.get(1.0,'end-1c') # Add a widget to get the user's password, and retrieve it here
+        album_num = 0
+        try:
+            conn = dba.create_conn()
+            dba.insert_user(user_id, fname, lname, email, dob, hometown, gender, password, album_num,conn)
+            conn = dba.create_conn()
+            realUser = dba.select_user_by_id(conn,user_id)
+        except():
+            print("Invalid Entry Try Again")
+        
+        self.switch_window()
+##    def __init__(self, master):
+##        self.master = master
+##        master.geometry("500x500")
+##        master.title("Edit Profile")
+##        
+##        self.button = tk.Button(master, text="See Friends", command=self.see_friends)
+##        self.button.pack(pady=10)
+##        
+##        self.button = tk.Button(master, text="Delete Photo or Album", command=self.back)
+##        self.button.pack(pady=10)
+##        
+##        self.button = tk.Button(master, text="See Contribution Score", command=self.see_cs)
+##        self.button.pack(pady=10)
+##        
+##        self.button = tk.Button(master, text="Back", command=self.back)
+##        self.button.pack(pady=10)
+##        
+##    def see_friends(self):
+##        self.master.withdraw()  
+##        self.newWindow = tk.Toplevel(self.master)  
+##        self.app = FriendsList(self.newWindow) 
+##        
+##    def see_cs(self):
+##        self.master.withdraw()  
+##        self.newWindow = tk.Toplevel(self.master)  
+##        self.app = HomePage(self.newWindow)
+##        
+##    def back(self):
+##        self.master.withdraw()  
+##        self.newWindow = tk.Toplevel(self.master)  
+##        self.app = HomePage(self.newWindow)
+##       
 class UploadPhoto:
     def __init__(self, master):
         self.master = master
