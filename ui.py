@@ -307,7 +307,7 @@ class MyProfile:
         #self.dob_entry = DateEntry(master, width=15, background='darkblue',foreground='white', borderwidth=2)
         #self.dob_entry.pack(padx=10, pady=10)
         
-        self.button = tk.Button(master, text="Create Your Account", command=self.get_input)
+        self.button = tk.Button(master, text="Update Changes", command=self.get_input)
         self.button.pack(pady=5)
         
         self.button = tk.Button(master, text="Back to Home", command=self.back)
