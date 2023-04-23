@@ -144,7 +144,7 @@ def update_user_albumcount(conn, user_id, new_album_num):
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
 
-def update_user_fname(conn, user_id, new_password):
+def update_user_password(conn, user_id, new_password):
     sql = "UPDATE Users SET password = %s WHERE userID = %s"
     try:
         cur = conn.cursor()

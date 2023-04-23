@@ -64,6 +64,7 @@ class LoginScreen:
 
             if realUser and realUser[7] == password:
                 self.switch_window(user_id)
+                userID = realUser[0]
             else:
                 print("Invalid Entry. Try Again.")
                 messagebox.showerror("Error", "Invalid user ID or password.")
@@ -301,10 +302,10 @@ class MyProfile:
         self.gender_menu = tk.OptionMenu(master, self.selected_gender, *gender_options)
         self.gender_menu.pack()  
         
-        self.doblabel = tk.Label(master, text="Date of Birth:")
-        self.doblabel.pack()
-        self.dob_entry = DateEntry(master, width=15, background='darkblue',foreground='white', borderwidth=2)
-        self.dob_entry.pack(padx=10, pady=10)
+       # self.doblabel = tk.Label(master, text="Date of Birth:")
+        #self.doblabel.pack()
+        #self.dob_entry = DateEntry(master, width=15, background='darkblue',foreground='white', borderwidth=2)
+        #self.dob_entry.pack(padx=10, pady=10)
         
         self.button = tk.Button(master, text="Create Your Account", command=self.get_input)
         self.button.pack(pady=5)
@@ -329,14 +330,12 @@ class MyProfile:
         user_id = self.uidtext_box.get(1.0, 'end-1c')
         hometown = self.httext_box.get(1.0, 'end-1c')
         gender = self.selected_gender.get()
-        dob = self.dob_entry.get_date()
+        #dob = self.dob_entry.get_date()
         password = self.passtext_box.get(1.0,'end-1c') # Add a widget to get the user's password, and retrieve it here
         album_num = 0
         try:
             conn = dba.create_conn()
-            dba.insert_user(user_id, fname, lname, email, dob, hometown, gender, password, album_num,conn)
-            conn = dba.create_conn()
-            realUser = dba.select_user_by_id(conn,user_id)
+            if(
         except():
             print("Invalid Entry Try Again")
         
