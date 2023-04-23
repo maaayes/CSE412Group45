@@ -327,51 +327,31 @@ class MyProfile:
         fname = self.ftext_box.get(1.0, 'end-1c')
         lname = self.ltext_box.get(1.0, 'end-1c')
         email = self.etext_box.get(1.0, 'end-1c')
-        user_id = self.uidtext_box.get(1.0, 'end-1c')
         hometown = self.httext_box.get(1.0, 'end-1c')
         gender = self.selected_gender.get()
         #dob = self.dob_entry.get_date()
         password = self.passtext_box.get(1.0,'end-1c') # Add a widget to get the user's password, and retrieve it here
-        album_num = 0
+      #  album_num = 0
         try:
             conn = dba.create_conn()
-            if(
+            if(fname != ""):
+                dba.update_user_fname(conn,userID,fname)
+            if(lname != ""):
+                dba.update_user_lname(conn,userID,lname)
+            if(email != ""):
+                dba.update_user_email(conn,userID,email)
+            if(hometown != ""):
+                dba.update_user_hometown(conn,userID,hometown)
+            if(gender != ""):
+                dba.update_user_gender(conn,userID,gender)
+            if(password!= ""):
+                dba.update_user_password(conn,userID,password)
+                
         except():
             print("Invalid Entry Try Again")
         
         self.switch_window()
-##    def __init__(self, master):
-##        self.master = master
-##        master.geometry("500x500")
-##        master.title("Edit Profile")
-##        
-##        self.button = tk.Button(master, text="See Friends", command=self.see_friends)
-##        self.button.pack(pady=10)
-##        
-##        self.button = tk.Button(master, text="Delete Photo or Album", command=self.back)
-##        self.button.pack(pady=10)
-##        
-##        self.button = tk.Button(master, text="See Contribution Score", command=self.see_cs)
-##        self.button.pack(pady=10)
-##        
-##        self.button = tk.Button(master, text="Back", command=self.back)
-##        self.button.pack(pady=10)
-##        
-##    def see_friends(self):
-##        self.master.withdraw()  
-##        self.newWindow = tk.Toplevel(self.master)  
-##        self.app = FriendsList(self.newWindow) 
-##        
-##    def see_cs(self):
-##        self.master.withdraw()  
-##        self.newWindow = tk.Toplevel(self.master)  
-##        self.app = HomePage(self.newWindow)
-##        
-##    def back(self):
-##        self.master.withdraw()  
-##        self.newWindow = tk.Toplevel(self.master)  
-##        self.app = HomePage(self.newWindow)
-##       
+
 class UploadPhoto:
     def __init__(self, master):
         self.master = master
