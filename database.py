@@ -49,7 +49,8 @@ def create_tables(conn):
             upd INTEGER PRIMARY KEY,
             uad INTEGER UNIQUE,
             caption VARCHAR,
-            data VARCHAR
+            data VARCHAR,
+            filepath VARCHAR
         )
         """,
         """
@@ -294,15 +295,15 @@ def get_all_photos_for_album(conn, uad):
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
 
-def insert_photo(conn, upd, uad, caption, data):
+def insert_photo(conn, upd, uad, caption, data,filename):
     sql = """
-    INSERT INTO Photos (upd, uad, caption, data)
-    VALUES (%s, %s, %s, %s)
+    INSERT INTO Photos (upd, uad, caption, data,filepath)
+    VALUES (%s, %s, %s, %s,%s)
     """
 
     try:
         cur = conn.cursor()
-        cur.execute(sql, (upd, uad, caption, data))
+        cur.execute(sql, (upd, uad, caption, data,filepath))
         conn.commit()
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)

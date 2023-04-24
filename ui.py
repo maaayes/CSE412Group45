@@ -12,9 +12,19 @@ conn = dba.create_conn()
 global realUser
 realUser = None
 global userID
-userID = -1
+
 global photo_locations
 photo_locations = []
+def pop_photos():
+    conn = dba.create_conn()
+    try:
+        global userID
+        results = dba.get_all_photos_for_album(conn,userID) #userID is used as UAD for home photos
+        for i in results:
+            photo_locations.append({'id': i[0], 'path': i[4], 'caption': i[2], 'date': i[3]})
+            print(i)
+    except Exception as error:
+        print(error)
 class WelcomeWindow:
     def __init__(self, master):
         self.master = master
@@ -63,8 +73,10 @@ class LoginScreen:
             realUser = dba.select_user_by_id_and_password(conn, user_id, password)
 
             if realUser and realUser[7] == password:
-                self.switch_window(user_id)
+                global userID
                 userID = realUser[0]
+                self.switch_window(user_id)
+                
             else:
                 print("Invalid Entry. Try Again.")
                 messagebox.showerror("Error", "Invalid user ID or password.")
@@ -165,6 +177,8 @@ class SignUpScreen:
     
 class HomePage:
     def __init__(self, master):
+        global userID
+        pop_photos()
         self.master = master
         master.geometry("800x500")
         master.title("User Home Page")
@@ -353,6 +367,7 @@ class MyProfile:
         self.switch_window()
 
 class UploadPhoto:
+    global userID
     def __init__(self, master):
         self.master = master
 
@@ -396,10 +411,10 @@ class UploadPhoto:
         elif not caption:
             messagebox.showerror("Error", "Caption cannot be empty")
         else:
-            unique_id = random.randint(14300,2877777)
+            unique_id = random.randint(14300,28770)
             current_date = datetime.datetime.now().strftime("%Y-%m-%d")
             photo_locations.append({'id': unique_id, 'path': filename, 'caption': caption, 'date': current_date})
-            dba.insert_photo(conn, unique_id, userID, caption, current_date)  # Uncomment and replace `conn` and `user_id` with the actual database connection and user id
+            dba.insert_photo(conn, unique_id, userID, caption, current_date,filename)  # Uncomment and replace `conn` and `user_id` with the actual database connection and user id
             messagebox.showinfo("Success", f"Photo uploaded\nFilepath: {filename}")
             
 class CreateAlbum:
