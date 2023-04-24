@@ -1,8 +1,6 @@
-# CSE412Group45
-- Tags
-- Likes
-- Comments
+# CSE412Group45 Broken Promises
+
 - Albums
 - Add/Remove Freinds
 - Freind Feed
-- Search Bar
+
