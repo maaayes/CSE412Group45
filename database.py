@@ -522,7 +522,25 @@ def get_top_tags(conn, limit):
         return results
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
+def select_photos_by_user_id(conn, user_id):
+    sql = "SELECT * FROM Photos WHERE userID = %s"
+    try:
+        cur = conn.cursor()
+        cur.execute(sql, (user_id,))
+        results = cur.fetchall()
+        return results
+    except (Exception, psycopg2.DatabaseError) as error:
+        print(error)
 
+def select_comments_by_user_id(conn, user_id):
+    sql = "SELECT * FROM Comments WHERE userID = %s"
+    try:
+        cur = conn.cursor()
+        cur.execute(sql, (user_id,))
+        results = cur.fetchall()
+        return results
+    except (Exception, psycopg2.DatabaseError) as error:
+        print(error)
 # Usage example
 if __name__ == "__main__":
     conn = create_conn()

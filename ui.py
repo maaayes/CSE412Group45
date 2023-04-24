@@ -7,6 +7,7 @@ import uuid
 import datetime
 import database as dba
 from tkinter import filedialog, messagebox
+from tkinter import ttk
 global conn
 conn = dba.create_conn()
 global realUser
@@ -216,7 +217,7 @@ class HomePage:
         self.profile_button.pack(pady=10, side='top')
 
         # Scrollable feed in the middle
-        feed_frame = tk.Frame(master, bg='white')
+        feed_frame = ttk.Frame(master)
         feed_frame.pack(side='right', fill='both', expand=True, padx=10, pady=10)
 
         feed_canvas = tk.Canvas(feed_frame, bg='white')
@@ -243,7 +244,7 @@ class HomePage:
         caption = photo_info['caption']
         date = photo_info['date']
 
-        # select_photo = select_photo_by_upd(conn, photo_id)  # Uncomment and replace `conn` with the actual database connection
+        select_photo = dba.select_photo_by_upd(conn, photo_id)  # Uncomment and replace `conn` with the actual database connection
 
         image_label = tk.Label(inner_feed_frame, bg='white', borderwidth=2, relief="groove")
         image_label.image = self.load_image_from_path(photo_path)
@@ -517,35 +518,99 @@ class CreateAlbum:
         self.master.withdraw()  
         self.newWindow = tk.Toplevel(self.master)  
         self.app = HomePage(self.newWindow) 
-
+from PIL import Image, ImageTk
 class Search:
     def __init__(self, master):
         self.master = master
         master.geometry("500x500")
         master.title("Search")
-        
-        self.button = tk.Button(master, text="Back", command=self.back)
-        self.button.pack(pady=10)
-        
-        self.button = tk.Button(master, text="Add or Find Friends", command=self.goto_find)
-        self.button.pack(pady=10)
-        
-        self.button = tk.Button(master, text="See Trending Tags", command=self.goto_find)
-        self.button.pack(pady=10)
-        
+
+        self.back_button = tk.Button(master, text="Back", command=self.back)
+        self.back_button.pack(pady=10)
+
+        self.search_var = tk.StringVar()
+        self.search_entry = tk.Entry(master, textvariable=self.search_var)
+        self.search_entry.pack(pady=10)
+
+        self.search_categories_label = tk.Label(master, text="Select search categories:")
+        self.search_categories_label.pack(pady=10)
+
+        self.search_categories_listbox = tk.Listbox(master, selectmode=tk.MULTIPLE)
+        self.search_categories_listbox.pack(pady=10)
+        search_categories = ["Tag", "Comment", "UserID", "Date"]
+        for category in search_categories:
+            self.search_categories_listbox.insert(tk.END, category)
+
+        self.search_button = tk.Button(master, text="Search", command=self.search)
+        self.search_button.pack(pady=10)
+
     def back(self):
-        self.master.withdraw() 
+        self.master.withdraw()
         self.newWindow = tk.Toplevel(self.master)
         self.app = HomePage(self.newWindow)
-    def goto_find(self):
-        self.master.withdraw() 
-        self.newWindow = tk.Toplevel(self.master)
-        self.app = Find(self.newWindow)
-    def goto_trending(self):
-        self.master.withdraw() 
-        self.newWindow = tk.Toplevel(self.master)
-        self.app = TrendingTags(self.newWindow)
-        
+  
+    def search(self):
+        search_query = self.search_var.get()
+        selected_indices = self.search_categories_listbox.curselection()
+        selected_categories = [self.search_categories_listbox.get(i) for i in selected_indices]
+
+        if not selected_categories:
+            messagebox.showerror("Error", "Please select at least one search category.")
+            return
+
+        for category in selected_categories:
+            if category == "Tag":
+                photos = dba.search_photos_by_tags(conn, search_query)
+                self.display_results("Photos", photos, display_photo=True)
+
+            elif category == "Comment":
+                comments = dba.search_comments_by_text(conn, search_query)
+                self.display_results("Comments", comments)
+
+            elif category == "UserID":
+                user = dba.select_user_by_id(conn, search_query)
+                if user:
+                    self.display_results("User", [user])
+                    photos = dba.select_photos_by_user_id(conn, search_query)
+                    self.display_results("User Photos", photos, display_photo=True)
+                    comments = dba.select_comments_by_user_id(conn, search_query)
+                    self.display_results("User Comments", comments)
+                else:
+                    messagebox.showerror("Error", "No user found with the specified user ID.")
+
+            elif category == "Date":
+                comments = dba.select_comments_by_date(conn, search_query)
+                self.display_results("Comments", comments)
+                photos = dba.select_photos_by_date(conn, search_query)
+                self.display_results("Photos", photos, display_photo=True)
+
+    def display_results(self, title, results, display_photo=False):
+        results_popup = tk.Toplevel()
+        results_popup.title(title)
+
+        # Create a Listbox to display the results
+        results_listbox = tk.Listbox(results_popup, width=50, height=10)
+        results_listbox.pack()
+
+        # Add results to the Listbox
+        if len(results) > 0:
+            for result in results:
+                results_listbox.insert(tk.END, result)
+                if display_photo:
+                    self.display_photo(result[1], results_popup)
+        else:
+            results_listbox.insert(tk.END, "No results found.")
+
+    def display_photo(self, photo):
+        try:
+            image = Image.open(photo[1])  # Assuming the file path is at index 1
+            image.thumbnail((200, 200))
+            tk_image = ImageTk.PhotoImage(image)
+            photo_label = tk.Label(self.master, image=tk_image)
+            photo_label.image = tk_image
+            photo_label.pack(pady=10)
+        except Exception as e:
+            print(f"Error loading image: {photo}. Error: {e}")
 class Find:
     def __init__(self, master):
         self.master = master
