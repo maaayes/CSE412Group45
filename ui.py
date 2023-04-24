@@ -12,7 +12,8 @@ conn = dba.create_conn()
 global realUser
 realUser = None
 global userID
-
+global various
+various = 0
 global photo_locations
 photo_locations = []
 def pop_photos():
@@ -75,6 +76,8 @@ class LoginScreen:
             if realUser and realUser[7] == password:
                 global userID
                 userID = realUser[0]
+                  
+                pop_photos()
                 self.switch_window(user_id)
                 
             else:
@@ -170,6 +173,9 @@ class SignUpScreen:
             dba.insert_user(user_id, fname, lname, email, dob, hometown, gender, password, album_num,conn)
             conn = dba.create_conn()
             realUser = dba.select_user_by_id(conn,user_id)
+            global userID
+            userID = user_id
+            pop_photos()
         except():
             print("Invalid Entry Try Again")
         
@@ -177,8 +183,7 @@ class SignUpScreen:
     
 class HomePage:
     def __init__(self, master):
-        global userID
-        pop_photos()
+      
         self.master = master
         master.geometry("800x500")
         master.title("User Home Page")
@@ -200,7 +205,7 @@ class HomePage:
         
         self.upload_button = tk.Button(button_frame, text="Upload Photo", command=self.switch_to_upload, font=custom_font, bg=button_bg, fg=button_fg, activebackground=button_active_bg, activeforeground=button_active_fg, relief="solid", bd=1, borderwidth=0)
         self.upload_button.pack(pady=10, side='top')
-        
+              
         self.album_button = tk.Button(button_frame, text="Create Album", command=self.switch_to_create_album, font=custom_font, bg=button_bg, fg=button_fg, activebackground=button_active_bg, activeforeground=button_active_fg, relief="solid", bd=1, borderwidth=0)
         self.album_button.pack(pady=10, side='top')
         
@@ -230,23 +235,107 @@ class HomePage:
         
     def add_images(self, inner_feed_frame):
         for photo_info in photo_locations:
-            photo_id = photo_info['id']
-            photo_path = photo_info['path']
-            caption = photo_info['caption']
-            date = photo_info['date']
-            
-            # select_photo = select_photo_by_upd(conn, photo_id)  # Uncomment and replace `conn` with the actual database connection
-            
-            image_label = tk.Label(inner_feed_frame, bg='white')
-            image_label.image = self.load_image_from_path(photo_path)
-            image_label.config(image=image_label.image)
-            image_label.pack(pady=10)
+            self.display_photo(inner_feed_frame, photo_info)
 
-            caption_label = tk.Label(inner_feed_frame, text=caption, font=("Helvetica", 10, "bold"), bg='white', wraplength=200, justify='center')
-            caption_label.pack()
+    def display_photo(self, inner_feed_frame, photo_info):
+        photo_id = photo_info['id']
+        photo_path = photo_info['path']
+        caption = photo_info['caption']
+        date = photo_info['date']
 
-            date_label = tk.Label(inner_feed_frame, text=date, font=("Helvetica", 8), bg='white')
-            date_label.pack()
+        # select_photo = select_photo_by_upd(conn, photo_id)  # Uncomment and replace `conn` with the actual database connection
+
+        image_label = tk.Label(inner_feed_frame, bg='white', borderwidth=2, relief="groove")
+        image_label.image = self.load_image_from_path(photo_path)
+        image_label.config(image=image_label.image)
+        image_label.pack(pady=10,anchor='center')
+       
+        
+        like_button_text = tk.StringVar()
+        like_button_text.set("Like")
+        like_button = tk.Button(inner_feed_frame, textvariable=like_button_text, command=lambda: self.like_photo(photo_id, like_button_text))
+        like_button.pack()
+        # Add comment button and comment section
+        comment_button = tk.Button(inner_feed_frame, text="Comments", command=lambda: self.show_comments_popup(photo_id))
+        comment_button.pack()
+
+        # Add tags button and tag section
+        tag_button = tk.Button(inner_feed_frame, text="Tags", command=lambda: self.show_tags_popup(photo_id))
+        tag_button.pack()
+
+        caption_label = tk.Label(inner_feed_frame, text=caption, font=("Helvetica", 10, "bold"), bg='white', wraplength=200, justify='center')
+        caption_label.pack()
+
+        date_label = tk.Label(inner_feed_frame, text=date, font=("Helvetica", 8), bg='white')
+        date_label.pack()
+
+    # Like photo method
+    def like_photo(self, photo_id,like_button_text):
+         if like_button_text.get() == "Like":
+            # Uncomment the next line to increment like count in the database
+            dba.increment_like_count(conn, photo_id)
+            like_button_text.set("Unlike")
+         else:
+            # Uncomment the next line to decrement like count in the database
+            dba.decrement_like_count(conn, photo_id)
+            like_button_text.set("Like")
+
+        
+    # Show comments popup
+    def show_comments_popup(self, photo_id):
+        
+        comments = dba.select_comments_by_upd(conn,photo_id)
+        comments_popup = tk.Toplevel()
+        comments_popup.title("Comments")
+
+    # Create a Listbox to display the comments
+        comments_listbox = tk.Listbox(comments_popup, width=50, height=10)
+        comments_listbox.pack()
+
+    # Display existing comments
+        if(len(comments) > 1):
+            for comment in comments:
+        # Add each comment to the Listbox
+                comments_listbox.insert(tk.END, comment)
+
+    # Add new comment entry and submit button
+        new_comment_entry = tk.Entry(comments_popup)
+        new_comment_entry.pack()
+
+        submit_comment_button = tk.Button(comments_popup, text="Submit Comment", command=lambda: self.submit_comment(photo_id, new_comment_entry.get()))
+        submit_comment_button.pack()
+
+    # Submit comment method
+    def submit_comment(self, photo_id, comment_text):
+        x = random.randint(0,500000)
+        dba.insert_comment(conn,x,comment_text,userID,photo_id,datetime.datetime.now().strftime("%Y-%m-%d"))
+        if hasattr(self, 'comments_popup') and self.comments_popup:
+            self.comments_popup.destroy()
+        self.show_comments_popup(photo_id)
+    def show_tags_popup(self, photo_id):
+        if hasattr(self, 'tags_popup') and self.tags_popup:
+            self.tags_popup.destroy()
+        tags_popup = tk.Toplevel()
+        tags_popup.title("Tags")
+    
+        tags_listbox = tk.Listbox(tags_popup, width=50, height=10)
+        tags_listbox.pack()
+
+        tags = dba.select_tags_by_upd(conn, photo_id)
+        for tag in tags:
+            tags_listbox.insert(tk.END, tag)
+
+        new_tag_entry = tk.Entry(tags_popup)
+        new_tag_entry.pack()
+
+        submit_tag_button = tk.Button(tags_popup, text="Submit Tag", command=lambda: self.submit_tag(photo_id, new_tag_entry.get()))
+        submit_tag_button.pack()
+
+    # Submit tag method
+    def submit_tag(self, photo_id, tag_text):
+        dba.insert_tag(conn,tag_text,photo_id)
+        self.show_tags_popup(photo_id)
+        
     def load_image_from_path(self, filepath):
         from PIL import Image, ImageTk
 
@@ -414,7 +503,7 @@ class UploadPhoto:
             unique_id = random.randint(14300,28770)
             current_date = datetime.datetime.now().strftime("%Y-%m-%d")
             photo_locations.append({'id': unique_id, 'path': filename, 'caption': caption, 'date': current_date})
-            dba.insert_photo(conn, unique_id, userID, caption, current_date,filename)  # Uncomment and replace `conn` and `user_id` with the actual database connection and user id
+            dba.insert_photo(conn, unique_id, userID, caption, current_date, filename)  # Uncomment and replace `conn` and `user_id` with the actual database connection and user id
             messagebox.showinfo("Success", f"Photo uploaded\nFilepath: {filename}")
             
 class CreateAlbum:

@@ -46,8 +46,8 @@ def create_tables(conn):
         """,
         """
         CREATE TABLE Photos (
-            upd INTEGER PRIMARY KEY,
-            uad INTEGER UNIQUE,
+            upd INTEGER UNIQUE PRIMARY KEY,
+            uad INTEGER,
             caption VARCHAR,
             data VARCHAR,
             filepath VARCHAR
@@ -62,16 +62,16 @@ def create_tables(conn):
         """,
         """
         CREATE TABLE Tags (
-            tag VARCHAR,
-            upd INTEGER PRIMARY KEY UNIQUE
+            tag VARCHAR PRIMARY KEY,
+            upd INTEGER 
         )
         """,
         """
         CREATE TABLE Comments (
             ucd INTEGER PRIMARY KEY,
             text VARCHAR,
-            userID INTEGER UNIQUE,
-            upd INTEGER UNIQUE,
+            userID INTEGER,
+            upd INTEGER,
             dateleft DATE
         )
         """
@@ -297,13 +297,13 @@ def get_all_photos_for_album(conn, uad):
 
 def insert_photo(conn, upd, uad, caption, data,filename):
     sql = """
-    INSERT INTO Photos (upd, uad, caption, data,filepath)
+    INSERT INTO Photos (upd, uad, caption, data, filepath)
     VALUES (%s, %s, %s, %s,%s)
     """
 
     try:
         cur = conn.cursor()
-        cur.execute(sql, (upd, uad, caption, data,filepath))
+        cur.execute(sql, (upd, uad, caption, data, filename))
         conn.commit()
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
@@ -349,7 +349,7 @@ def insert_like(conn, upd, user_id, like_count):
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
 def select_like_count_by_upd(conn, upd):
-    sql = "SELECT like_count FROM Likes WHERE upd = %s"
+    sql = "SELECT likecount FROM Likes WHERE upd = %s"
     try:
         cur = conn.cursor()
         cur.execute(sql, (upd,))
@@ -360,7 +360,7 @@ def select_like_count_by_upd(conn, upd):
 
 # Select like_count by user_id (unique user id)
 def select_like_count_by_user_id(conn, user_id):
-    sql = "SELECT like_count FROM Likes WHERE user_id = %s"
+    sql = "SELECT likecount FROM Likes WHERE user_id = %s"
     try:
         cur = conn.cursor()
         cur.execute(sql, (user_id,))
@@ -370,7 +370,7 @@ def select_like_count_by_user_id(conn, user_id):
         print(error)
 # Increment like_count for a specific upd (unique photo id)
 def increment_like_count(conn, upd):
-    sql = "UPDATE Likes SET like_count = like_count + 1 WHERE upd = %s"
+    sql = "UPDATE Likes SET likecount = likecount + 1 WHERE upd = %s"
     try:
         cur = conn.cursor()
         cur.execute(sql, (upd,))
@@ -380,7 +380,7 @@ def increment_like_count(conn, upd):
 
 # Decrement like_count for a specific upd (unique photo id)
 def decrement_like_count(conn, upd):
-    sql = "UPDATE Likes SET like_count = GREATEST(like_count - 1, 0) WHERE upd = %s"
+    sql = "UPDATE Likes SET likecount = GREATEST(likecount - 1, 0) WHERE upd = %s"
     try:
         cur = conn.cursor()
         cur.execute(sql, (upd,))
@@ -405,13 +405,12 @@ def select_tags_by_upd(conn, upd):
         cur = conn.cursor()
         cur.execute(sql, (upd,))
         results = cur.fetchall()
-        for result in results:
-            print(result)
+        return results
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
 def insert_comment(conn, ucd, text, user_id, upd, dateleft):
     sql = """
-    INSERT INTO Comments (ucd, text, user_id, upd, dateleft)
+    INSERT INTO Comments (ucd, text, userID, upd, dateleft)
     VALUES (%s, %s, %s, %s, %s)
     """
 
@@ -422,7 +421,7 @@ def insert_comment(conn, ucd, text, user_id, upd, dateleft):
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
 def select_comments_by_user_id(conn, user_id):
-    sql = "SELECT ucd FROM Comments WHERE user_id = %s"
+    sql = "SELECT text FROM Comments WHERE userID = %s"
     try:
         cur = conn.cursor()
         cur.execute(sql, (user_id,))
@@ -431,7 +430,7 @@ def select_comments_by_user_id(conn, user_id):
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
 def select_comments_by_upd(conn, upd):
-    sql = "SELECT ucd FROM Comments WHERE upd = %s"
+    sql = "SELECT text FROM Comments WHERE upd = %s"
     try:
         cur = conn.cursor()
         cur.execute(sql, (upd,))
@@ -440,7 +439,7 @@ def select_comments_by_upd(conn, upd):
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
 def select_comments_by_date(conn, dateleft):
-    sql = "SELECT ucd FROM Comments WHERE dateleft = %s"
+    sql = "SELECT text FROM Comments WHERE dateleft = %s"
     try:
         cur = conn.cursor()
         cur.execute(sql, (dateleft,))
