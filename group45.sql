@@ -160,23 +160,23 @@ CREATE TABLE public.photos (
 
 INSERT INTO public.photos (upd, uad, caption, data, filepath)
 VALUES
-(10000, 100, ‘my fav trip’, , ),
-(10001, 100, ‘europe 2022’, , ),
-(10002, 101, ‘fav restaurant’, , ),
-(10003, 102, ‘my friends’, , ),
-(10004, 103, ‘my family’, , ),
-(10005, 104, ‘extra photos’, , ),
-(10006, 105, ‘graduation event’, , ),
-(10007, 105, ‘wedding event’, , ),
-(10008, 106, ‘the beach’, , ),
-(10009, 107, ‘my fav photo’, , ),
-(10010, 108, ‘last summer was fun’, , ),
-(10011, 109, ‘thanksgiving with family’, , ),
-(10012, 110, ‘exploring the city’, , ),
-(10013, 111, ‘first day of the semester’, , ),
-(10014, 112, ‘christmas 2022’, , ),
-(10015, 112, ‘vday 2023’, , ),
-(10016, 113, ‘setting up camp’, , );
+(10000, 100, ‘my fav trip’, ,image1.png),
+(10001, 100, ‘europe 2022’, ,image2.png),
+(10002, 101, ‘fav restaurant’, ,image3.png),
+(10003, 102, ‘my friends’, ,image4.png),
+(10004, 103, ‘my family’, ,image5.png),
+(10005, 104, ‘extra photos’, ,image6.png),
+(10006, 105, ‘graduation event’, ,image7.png),
+(10007, 105, ‘wedding event’, ,image8.png),
+(10008, 106, ‘the beach’, ,image9.png),
+(10009, 107, ‘my fav photo’, ,image10.png),
+(10010, 108, ‘last summer was fun’, ,image11.png),
+(10011, 109, ‘thanksgiving with family’, ,image12.png),
+(10012, 110, ‘exploring the city’, ,image13.png),
+(10013, 111, ‘first day of the semester’, ,image14.png),
+(10014, 112, ‘christmas 2022’, ,image15.png),
+(10015, 112, ‘vday 2023’, ,image16.png),
+(10016, 113, ‘setting up camp’, ,image17.png);
 
 ALTER TABLE public.photos OWNER TO "rootUser";
 
