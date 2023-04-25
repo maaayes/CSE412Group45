@@ -237,6 +237,15 @@ def select_friends_by_user_id(conn, user_id):
         
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
+def select_user_by_email(conn,friend_email):
+    sql = "SELECT * FROM Users WHERE email = %s"
+    try:
+        cur = conn.cursor()
+        cur.execute(sql, (friend_email,))
+        return cur.fetchall()
+    except (Exception, psycopg2.DatabaseError) as error:
+            print(error)
+            
 def delete_friend(conn, user_id, friend_id):
     sql = "DELETE FROM Friends WHERE userID = %s AND friend = %s"
     try:
