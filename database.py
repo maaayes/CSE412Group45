@@ -1,4 +1,5 @@
 import psycopg2
+#Setup connection
 def create_conn():
 	connection = psycopg2.connect(
         dbname="group45",
@@ -10,9 +11,9 @@ def create_conn():
 	return connection
 
 def create_tables(conn):
-    commands = (
+    commands = ( #basic sql tables
         """
-        CREATE TABLE Users (
+        CREATE TABLE Users ( 
             userID INTEGER,
             fname VARCHAR,
             lname VARCHAR,
@@ -76,8 +77,8 @@ def create_tables(conn):
         )
         """
     )
-    unix_socket = '/cloudsql/{}'.format("coherent-answer-384517:us-central1:group45")
-
+    #unix_socket = '/cloudsql/{}'.format("coherent-answer-384517:us-central1:group45")
+                #Ignore failed attempt to use google cloud :(
 
     try:
         cur = conn.cursor()
@@ -89,6 +90,7 @@ def create_tables(conn):
     finally:
         if conn is not None:
             conn.close()
+#Rest of Functions follow similar format sql insert/select/etc then conn.cursor() navigates to it.
 def insert_user(user_id, fname, lname, email, dob, hometown, gender, password, album_num,conn):
     sql = """
     INSERT INTO Users (userID, fname, lname, email, dob, hometown, gender, password, albumNum)
