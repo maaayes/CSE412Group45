@@ -32,7 +32,7 @@ def popPhotos():
         print(error)
 #Begin Class Declerations
 class WelcomeWindow:
-    def _Init__(self, master):
+    def __init__(self, master):
         self.master = master
         master.geometry("500x500")
         master.title("App Landing Page")
@@ -52,7 +52,7 @@ class WelcomeWindow:
         self.app = SignUpScreen(self.newWindow)
         
 class LoginScreen:
-    def _Init__(self, master):
+    def __init__(self, master):
         self.master = master
         master.geometry("500x500")
         master.title("Log In Existing User")
@@ -102,7 +102,7 @@ class LoginScreen:
 
     
 class SignUpScreen:
-    def _Init__(self, master):
+    def __init__(self, master):
         self.master = master
         master.geometry("600x900")
         master.title("New User Sign Up")
@@ -194,7 +194,7 @@ class SignUpScreen:
         self.switchWindow()
     
 class HomePage:
-    def _Init__(self, master):
+    def __init__(self, master):
         self.master = master
         master.geometry("800x500")
         master.title("User xHome Page")
@@ -263,7 +263,7 @@ class HomePage:
     #within our feed we have an inner method that will hold the photos
     def createInnerFeedFrame(self, feedCanvas):
         innerFeedFrame = tk.Frame(feedCanvas, bg='white')
-        feedCanvas.createWindow((0, 0), window=innerFeedFrame, anchor='nw')
+        feedCanvas.create_window((0, 0), window=innerFeedFrame, anchor='nw')
         return innerFeedFrame
     #setup feed here by getting all the photos and randomly shufflying them
     def configureFeed(self):
@@ -380,7 +380,7 @@ class HomePage:
 
         img = Image.open(filepath)
         self.master.update()
-        img = img.resize((int(self.master.winfoWidth() / 4), int(self.master.winfoHeight() / 4)), Image.LANCZOS)
+        img = img.resize((int(self.master.winfo_width() / 4), int(self.master.winfo_height() / 4)), Image.LANCZOS)
         return ImageTk.PhotoImage(img)
     def switchToTrending(self):
         self.master.withdraw()
@@ -415,7 +415,7 @@ class HomePage:
 class AlbumsPage:
     global userID
 
-    def _Init__(self, master):
+    def __init__(self, master):
         self.master = master
         master.geometry("800x500")
         master.title("Albums")
@@ -458,7 +458,7 @@ class AlbumsPage:
 class CreateAlbum:
     global userID
 
-    def _Init__(self, master):
+    def __init__(self, master):
         self.master = master
         master.geometry("500x500")
         master.title("Create Album")
@@ -500,7 +500,7 @@ class CreateAlbum:
             self.app = ViewAlbum(self.newWindow, uad)
 # Modified ViewAlbum class
 class ViewAlbum:
-    def _Init__(self, master, uad):
+    def __init__(self, master, uad):
         #Set up Album Info
         self.master = master
         self.uad = uad
@@ -539,15 +539,15 @@ class ViewAlbum:
 
     def loadPhotos(self):
         photos = dba.selectPhotosByUad(conn, self.uad) #Get photos within the unique album identifier
+        if(photos != None):
+            for photo in photos:
+                img = Image.open(photo[4])   #Get photo at filepath
+                img = img.resize((100, 100), Image.ANTIALIAS) #Create Image
+                img = ImageTk.PhotoImage(img)
 
-        for photo in photos:
-            img = Image.open(photo[4])   #Get photo at filepath
-            img = img.resize((100, 100), Image.ANTIALIAS) #Create Image
-            img = ImageTk.PhotoImage(img)
-
-            photoLabel = tk.Label(self.photosFrame, image=img) #Setup Photo Labels
-            photoLabel.image = img
-            photoLabel.pack(side=tk.LEFT, padx=10)
+                photoLabel = tk.Label(self.photosFrame, image=img) #Setup Photo Labels
+                photoLabel.image = img
+                photoLabel.pack(side=tk.LEFT, padx=10)
     #Adding Photo
     def addPhoto(self):
         filepath = filedialog.askopenfilename(initialdir="/", title="Select file",filetypes=(("jpeg files", "*.jpg"), ("png files", "*.png"), ("all files", "*.*"))) #Get all photo types
@@ -583,7 +583,7 @@ class ViewAlbum:
         self.loadPhotos()
 class FriendFeed:
     global userID
-    def _Init__(self, master):
+    def __init__(self, master):
         self.master = master
         master.geometry("800x500")
         master.title("Friend Feed")
@@ -620,7 +620,7 @@ class FriendFeed:
 
             self.feedListbox.insert(tk.END, f"{friendName} uploaded '{photoName}' on {uploadTime}")
 class MyProfile:
-    def _Init__(self, master):
+    def __init__(self, master):
         self.master = master
         master.geometry("600x900")
         master.title("Change User Info")
@@ -712,7 +712,7 @@ class MyProfile:
         
         self.switchWindow()
 class Friends:
-    def _Init__(self, master):
+    def __init__(self, master):
         self.master = master
         master.geometry("800x1200")
         master.title("Friends")
@@ -800,7 +800,7 @@ class Friends:
                    
 class UploadPhoto:
     global userID #Ensure we are searching the right user
-    def _Init__(self, master):
+    def __init__(self, master):
         self.master = master
         #Set up FileName Label
         self.filenameLabel = tk.Label(master, text="No file selected", font=("Helvetica", 14))
@@ -852,7 +852,7 @@ class UploadPhoto:
 
 from PIL import Image, ImageTk
 class Search:
-    def _Init__(self, master):
+    def __init__(self, master):
         self.master = master
         master.geometry("500x500")
         master.title("Search")
@@ -949,7 +949,7 @@ class Search:
         except Exception as e:
             print(f"Error loading image: {photo}. Error: {e}")
 class TrendingTags:
-    def _Init__(self,master):
+    def __init__(self,master):
         self.master = master
         master.geometry("500x500")
         master.title("Trending Tags")
@@ -963,6 +963,7 @@ class TrendingTags:
         self.master.withdraw()
         self.newWindow = tk.Toplevel(self.master)
         self.app = HomePage(self.newWindow)
+
 root = tk.Tk()
 app = WelcomeWindow(root)
 root.mainloop()
