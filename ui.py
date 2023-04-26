@@ -198,62 +198,82 @@ class HomePage:
         self.master = master
         master.geometry("800x500")
         master.title("User Home Page")
+        self.photo_locations = []
+        self.create_ui_elements(master)
+        self.configure_feed()
         
-        # Custom font
+
+    def create_ui_elements(self, master):
         custom_font = ("Helvetica", 12, "bold")
 
-        # Styling for buttons
-        button_bg = "#007BFF" #light grey
-        button_fg = "#000000" #black
-        button_active_bg = "#0056B3" #grey
-        button_active_fg = "#000000" #black
-
-        button_frame = tk.Frame(master)
+        button_frame = self.create_button_frame(master, custom_font)
         button_frame.pack(side='right', fill='y', padx=10, pady=10)
-        #Setup Buttons Here
-        self.search_button = tk.Button(button_frame, text="Search", command=self.switch_to_search, font=custom_font, bg=button_bg, fg=button_fg, activebackground=button_active_bg, activeforeground=button_active_fg, relief="solid", bd=1, borderwidth=0)
-        self.search_button.pack(pady=10, side='top')
-        
-        self.upload_button = tk.Button(button_frame, text="Upload Photo", command=self.switch_to_upload, font=custom_font, bg=button_bg, fg=button_fg, activebackground=button_active_bg, activeforeground=button_active_fg, relief="solid", bd=1, borderwidth=0)
-        self.upload_button.pack(pady=10, side='top')
 
-        self.friends_button = tk.Button(button_frame, text="Friends", command=self.switch_to_friends, font=custom_font, bg=button_bg, fg=button_fg, activebackground=button_active_bg, activeforeground=button_active_fg, relief="solid", bd=1, borderwidth=0)
-        self.friends_button.pack(pady=10, side='top')
-
-        self.album_button = tk.Button(button_frame, text="Albums", command=self.switch_to_albums, font=custom_font, bg=button_bg, fg=button_fg, activebackground=button_active_bg, activeforeground=button_active_fg, relief="solid", bd=1, borderwidth=0)
-        self.album_button.pack(pady=10, side='top')
-        
-        self.profile_button = tk.Button(button_frame, text="Edit Profile", command=self.switch_to_profile, font=custom_font, bg=button_bg, fg=button_fg, activebackground=button_active_bg, activeforeground=button_active_fg, relief="solid", bd=1, borderwidth=0)
-        self.profile_button.pack(pady=10, side='top')
-        
-        # Scrollable feed in the middle
-        feed_frame = ttk.Frame(master) #special tinkter tink
+        feed_frame, feed_canvas = self.create_feed_frame(master)
         feed_frame.pack(side='left', fill='both', expand=True, padx=10, pady=10)
 
-        feed_canvas = tk.Canvas(feed_frame, bg='white')
-        feed_canvas.pack(side='left', fill='both', expand=True)
-
-        scrollbar = tk.Scrollbar(feed_frame, orient='vertical', command=feed_canvas.yview)
+        scrollbar = self.create_scrollbar(feed_frame, feed_canvas)
         scrollbar.pack(side='left', fill='y')
 
+        inner_feed_frame = self.create_inner_feed_frame(feed_canvas)
+        self.add_random_images(inner_feed_frame)
+
+    def create_button_frame(self, master, custom_font):
+        button_bg = "#007BFF"
+        button_fg = "#000000"
+        button_active_bg = "#0056B3"
+        button_active_fg = "#000000"
+
+        button_frame = tk.Frame(master)
+        
+        buttons = [
+            ("Search", self.switch_to_search),
+            ("Upload Photo", self.switch_to_upload),
+            ("Friends", self.switch_to_friends),
+            ("Albums", self.switch_to_albums),
+            ("Edit Profile", self.switch_to_profile),
+            ("Trending Tags", self.switch_to_trending)
+        ]
+
+        for text, command in buttons:
+            button = tk.Button(button_frame, text=text, command=command, font=custom_font, bg=button_bg, fg=button_fg, activebackground=button_active_bg, activeforeground=button_active_fg, relief="solid", bd=1, borderwidth=0)
+            button.pack(pady=10, side='top')
+
+        return button_frame
+
+    def create_feed_frame(self, master):
+        feed_frame = ttk.Frame(master)
+        feed_canvas = tk.Canvas(feed_frame, bg='white')
+        feed_canvas.pack(side='left', fill='both', expand=True)
+        return feed_frame, feed_canvas
+
+    def create_scrollbar(self, feed_frame, feed_canvas):
+        scrollbar = tk.Scrollbar(feed_frame, orient='vertical', command=feed_canvas.yview)
         feed_canvas.configure(yscrollcommand=scrollbar.set)
         feed_canvas.bind('<Configure>', lambda e: feed_canvas.configure(scrollregion=feed_canvas.bbox('all')))
+        return scrollbar
 
+    def create_inner_feed_frame(self, feed_canvas):
         inner_feed_frame = tk.Frame(feed_canvas, bg='white')
         feed_canvas.create_window((0, 0), window=inner_feed_frame, anchor='nw')
+        return inner_feed_frame
 
-        self.add_images(inner_feed_frame)
-        
-    def add_images(self, inner_feed_frame):
-        for photo_info in photo_locations:
-            self.display_photo(inner_feed_frame, photo_info) #loop through all photos and call display photo function
+    def configure_feed(self):
+        self.photo_locations = dba.get_all_photos(conn)
+        random.shuffle(self.photo_locations)
 
+    def add_random_images(self, inner_feed_frame):
+        self.photo_locations = dba.get_all_photos(conn)
+        for photo_info in self.photo_locations:
+            print(photo_info)
+            self.display_photo(inner_feed_frame, photo_info)
     def display_photo(self, inner_feed_frame, photo_info):
-        photo_id = photo_info['id']
-        photo_path = photo_info['path']
+        print(photo_info)
+        photo_id = photo_info['upd']
+        photo_path = photo_info['filepath']
         caption = photo_info['caption']
-        date = photo_info['date']
-
+        date = photo_info['data']
+        #print(photo_path)
         select_photo = dba.select_photo_by_upd(conn, photo_id)  #call photo upload feature
 
         image_label = tk.Label(inner_feed_frame, bg='white', borderwidth=2, relief="groove")
@@ -354,7 +374,10 @@ class HomePage:
         self.master.update()
         img = img.resize((int(self.master.winfo_width() / 4), int(self.master.winfo_height() / 4)), Image.LANCZOS)
         return ImageTk.PhotoImage(img)
-    
+    def switch_to_trending(self):
+        self.master.withdraw()
+        self.newWindow = tk.Toplevel(self.master)
+        self.app = TrendingTags(self.newWindow)
     def switch_to_friends(self):
         self.master.withdraw()
         self.newWindow = tk.Toplevel(self.master) 
@@ -917,7 +940,21 @@ class Search:
             photo_label.pack(pady=10)
         except Exception as e:
             print(f"Error loading image: {photo}. Error: {e}")
+class TrendingTags:
+    def __init__(self,master):
+        self.master = master
+        master.geometry("500x500")
+        master.title("Trending Tags")
 
+        self.back_button = tk.Button(master, text="Back", command=self.back)
+
+        tags = dba.get_top_tags(search_query) #Get comments by date
+        self.display_results("Top Tags", tags)
+
+    def back(self):
+        self.master.withdraw()
+        self.newWindow = tk.Toplevel(self.master)
+        self.app = HomePage(self.newWindow)
 root = tk.Tk()
 app = WelcomeWindow(root)
 root.mainloop()

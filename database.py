@@ -247,7 +247,23 @@ def select_user_by_email(conn,friend_email):
         return cur.fetchall()
     except (Exception, psycopg2.DatabaseError) as error:
             print(error)
-            
+def get_all_photos(conn):
+    cursor = conn.cursor()
+    query = "SELECT upd, uad, caption, data, filepath FROM photos;"
+    cursor.execute(query)
+    
+    photos = []
+    for row in cursor.fetchall():
+        photo = {
+            'upd': row[0],
+            'uad': row[1],
+            'caption': row[2],
+            'data': row[3],
+            'filepath': row[4]
+        }
+        photos.append(photo)
+    print(photos)
+    return photos            
 def delete_friend(conn, user_id, friend_id):
     sql = "DELETE FROM Friends WHERE userID = %s AND friend = %s"
     try:
