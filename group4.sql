@@ -31,22 +31,20 @@ CREATE TABLE public.albums (
     doc date
 );
 
-INSERT INTO public.albums (uad, name, uid, doc) VALUES (1, 'Volcanic Beats', 301, '2022-01-01');
-INSERT INTO public.albums (uad, name, uid, doc) VALUES (2, 'Jungle Grooves', 302, '2022-01-15');
-INSERT INTO public.albums (uad, name, uid, doc) VALUES (3, 'Savannah Suprise', 303, '2022-02-01');
-INSERT INTO public.albums (uad, name, uid, doc) VALUES (4, 'Annies Rapids', 304, '2022-02-15');
-INSERT INTO public.albums (uad, name, uid, doc) VALUES (5, 'Desert Mirage', 305, '2022-03-01');
-INSERT INTO public.albums (uad, name, uid, doc) VALUES (6, 'Tinas Chicken Thighs', 306, '2022-03-15');
-INSERT INTO public.albums (uad, name, uid, doc) VALUES (7, 'Mountainious Whispers', 307, '2022-04-01');
-INSERT INTO public.albums (uad, name, uid, doc) VALUES (8, 'Various Animal Hearts', 308, '2022-04-15');
-INSERT INTO public.albums (uad, name, uid, doc) VALUES (9, 'Ocean Odyssey 2022 Trip', 309, '2022-05-01');
-INSERT INTO public.albums (uad, name, uid, doc) VALUES (10, 'Chile Pepper Fusion Resturant Design', 310, '2022-05-15');
-INSERT INTO public.albums (uad, name, uid, doc) VALUES (11, 'Rhythm of the Rainforest on BlueRay', 311, '2022-06-01');
+INSERT INTO public.albums (uad, name, uid, doc) VALUES (100, 'Travel', 2, '2023-03-01');
+INSERT INTO public.albums (uad, name, uid, doc) VALUES (101, 'Food', 3, '2022-04-24');
+INSERT INTO public.albums (uad, name, uid, doc) VALUES (102, 'Friends', 3, '2022-08-10');
+INSERT INTO public.albums (uad, name, uid, doc) VALUES (103, 'Family', 4, '2022-12-22');
+INSERT INTO public.albums (uad, name, uid, doc) VALUES (104, 'Random', 6, '2022-10-03');
+INSERT INTO public.albums (uad, name, uid, doc) VALUES (105, 'Events', 6, '2023-02-19');
+INSERT INTO public.albums (uad, name, uid, doc) VALUES (106, 'Nature', 8, '2023-05-28');
+INSERT INTO public.albums (uad, name, uid, doc) VALUES (107, 'Photos', 9, '2021-12-12');
+INSERT INTO public.albums (uad, name, uid, doc) VALUES (108, 'Summer', 9, '2022-12-29');
+INSERT INTO public.albums (uad, name, uid, doc) VALUES (109, 'Family', 10, '2022-11-30');
 INSERT INTO public.albums (uad, name, uid, doc) VALUES (12, 'Prairie Pulse', 312, '2022-06-15');
 INSERT INTO public.albums (uad, name, uid, doc) VALUES (13, 'MidJourney Suprise', 313, '2022-07-01');
 INSERT INTO public.albums (uad, name, uid, doc) VALUES (14, 'Aurora Borealis Ballet', 314, '2022-07-15');
 INSERT INTO public.albums (uad, name, uid, doc) VALUES (15, 'Wildfire Resturant Trip 2022', 315, '2022-08-01');
-
 ALTER TABLE public.albums OWNER TO "rootUser";
 
 --
@@ -61,22 +59,23 @@ CREATE TABLE public.comments (
     dateleft date
 );
 
-INSERT INTO public.comments (ucd, text, userid, upd, dateleft) VALUES (1, 'Love those cornfield races in middle America!', 301, 1630446325, '2022-01-02');
-INSERT INTO public.comments (ucd, text, userid, upd, dateleft) VALUES (2, 'The prairies are so peaceful, perfect for a Sunday drive.', 302, 1630446325, '2022-01-16');
-INSERT INTO public.comments (ucd, text, userid, upd, dateleft) VALUES (3, 'Just saw a dolphin while cruising along the coast!', 303, 1630446325, '2022-02-02');
-INSERT INTO public.comments (ucd, text, userid, upd, dateleft) VALUES (4, 'Nothing beats the freedom of a road trip in the heartland.', 304, 1630446325, '2022-02-16');
-INSERT INTO public.comments (ucd, text, userid, upd, dateleft) VALUES (5, 'The new Mustang is fast, but it still can''t outrun a cheetah!', 305, 1630446326, '2022-03-02');
-INSERT INTO public.comments (ucd, text, userid, upd, dateleft) VALUES (6, 'Did you know that the sea turtle can travel thousands of miles?', 306, 1630446326, '2022-03-16');
-INSERT INTO public.comments (ucd, text, userid, upd, dateleft) VALUES (7, 'I wish I had a submarine to explore the ocean depths.', 307, 1630446328, '2022-04-02');
-INSERT INTO public.comments (ucd, text, userid, upd, dateleft) VALUES (8, 'This weekend, I''ll be racing my Camaro at the local track!', 308, 1630446329, '2022-04-16');
-INSERT INTO public.comments (ucd, text, userid, upd, dateleft) VALUES (9, 'Route 66 still captures the spirit of middle America.', 309, 1630446325, '2022-05-02');
-INSERT INTO public.comments (ucd, text, userid, upd, dateleft) VALUES (10, 'Sharks are fascinating creatures, don''t you think?', 310, 1630446331, '2022-05-16');
-INSERT INTO public.comments (ucd, text, userid, upd, dateleft) VALUES (11, 'Taking a scenic drive through the Great Plains is amazing.', 311, 1630446325, '2022-06-02');
-INSERT INTO public.comments (ucd, text, userid, upd, dateleft) VALUES (12, 'Did you know that the octopus can change its color?', 312, 1630446325, '2022-06-16');
-INSERT INTO public.comments (ucd, text, userid, upd, dateleft) VALUES (13, 'The Corvette is an American classic, perfect for open roads.', 313, 1630446331, '2022-07-02');
-INSERT INTO public.comments (ucd, text, userid, upd, dateleft) VALUES (14, 'I love exploring small towns and local diners in middle America.', 314, 1630446332, '2022-07-16');
-INSERT INTO public.comments (ucd, text, userid, upd, dateleft) VALUES (15, 'Jellyfish are such mesmerizing creatures, don''t you agree?', 315, 1630446323, '2022-08-02');
-
+INSERT INTO public.comments (ucd, text, userid, upd, dateleft) VALUES (20000, 'looks good', 1, 10002, '2023-01-28');
+INSERT INTO public.comments (ucd, text, userid, upd, dateleft) VALUES (20001, 'that was fun', 1, 10003, '2022-08-11');
+INSERT INTO public.comments (ucd, text, userid, upd, dateleft) VALUES (20002, 'have a great trip', 2, 10000, '2023-03-02');
+INSERT INTO public.comments (ucd, text, userid, upd, dateleft) VALUES (20003, 'looks like fun', 3, 10000, '2023-03-02');
+INSERT INTO public.comments (ucd, text, userid, upd, dateleft) VALUES (20004, 'great picture', 4, 10000, '2023-03-03');
+INSERT INTO public.comments (ucd, text, userid, upd, dateleft) VALUES (20005, 'really nice', 5, 10008, '2023-05-29');
+INSERT INTO public.comments (ucd, text, userid, upd, dateleft) VALUES (20006, 'it was great', 7, 10010, '2022-12-31');
+INSERT INTO public.comments (ucd, text, userid, upd, dateleft) VALUES (20007, 'really nice', 7, 10004, '2022-12-23');
+INSERT INTO public.comments (ucd, text, userid, upd, dateleft) VALUES (20008, 'looks great', 8, 10002, '2023-01-28');
+INSERT INTO public.comments (ucd, text, userid, upd, dateleft) VALUES (20009, 'amazing', 9, 10005, '2022-10-04');
+INSERT INTO public.comments (ucd, text, userid, upd, dateleft) VALUES (20010, 'great job', 10, 10006, '2023-02-20');
+INSERT INTO public.comments (ucd, text, userid, upd, dateleft) VALUES (20011, 'congratulations', 10, 10007, '2023-02-20');
+INSERT INTO public.comments (ucd, text, userid, upd, dateleft) VALUES (20012, 'good luck', 10, 10013, '2023-02-01');
+INSERT INTO public.comments (ucd, text, userid, upd, dateleft) VALUES (20013, 'have fun', 6, 10016, '2023-04-22');
+INSERT INTO public.comments (ucd, text, userid, upd, dateleft) VALUES (20014, 'happy holidays', 14, 10014, '2023-04-22');
+INSERT INTO public.comments (ucd, text, userid, upd, dateleft) VALUES (20015, 'happy valentines day', 14, 10015, '2023-04-22');
+INSERT INTO public.comments (ucd, text, userid, upd, dateleft) VALUES (20016, 'this is cute', 11, 10015, '2023-04-22');
 ALTER TABLE public.comments OWNER TO "rootUser";
 
 --
@@ -90,7 +89,7 @@ CREATE TABLE public.friends (
 );
 INSERT INTO public.friends (userid, friend, friendshipdate) VALUES (1, 6, '2022-03-15');
 INSERT INTO public.friends (userid, friend, friendshipdate) VALUES (2, 9, '2022-01-20');
-INSERT INTO public.friends (userid, friend, friendshipdate) VALUES (3, 4, '2021-12-05'); #sample data says 3 3 but that wont work
+INSERT INTO public.friends (userid, friend, friendshipdate) VALUES (3, 4, '2021-12-05'); 
 INSERT INTO public.friends (userid, friend, friendshipdate) VALUES (4, 5, '2022-02-10');
 INSERT INTO public.friends (userid, friend, friendshipdate) VALUES (5, 10, '2021-11-08');
 INSERT INTO public.friends (userid, friend, friendshipdate) VALUES (6, 1, '2021-09-01');
@@ -126,8 +125,8 @@ INSERT INTO public.likes (upd, userid, likecount) VALUES (10006, 5, 7);
 INSERT INTO public.likes (upd, userid, likecount) VALUES (10007, 5, 0);
 INSERT INTO public.likes (upd, userid, likecount) VALUES (10008, 7, 10);
 INSERT INTO public.likes (upd, userid, likecount) VALUES (10009, 8, 23);
-INSERT INTO public.likes (upd, userid, likecount) VALUES (10010 8, 47);
-INSERT INTO public.likes (upd, userid, likecount) VALUES (10011 9, 12);
+INSERT INTO public.likes (upd, userid, likecount) VALUES (10010,8, 47);
+INSERT INTO public.likes (upd, userid, likecount) VALUES (10011, 9, 12);
 INSERT INTO public.likes (upd, userid, likecount) VALUES (10012, 13, 9);
 INSERT INTO public.likes (upd, userid, likecount) VALUES (10013, 14, 21);
 INSERT INTO public.likes (upd, userid, likecount) VALUES (10014, 15, 4);
@@ -144,7 +143,7 @@ CREATE TABLE public.photos (
     data character varying,
     filepath character varying
 );
-#change here from data to data containing date
+
 INSERT INTO public.photos (upd, uad, caption, data, filepath) VALUES (10000, 1, 'my fav trip', '2022-04-24', 'image1.png');
 INSERT INTO public.photos (upd, uad, caption, data, filepath) VALUES (10001, 2, 'europe 2022', '2022-04-24', 'image2.png');
 INSERT INTO public.photos (upd, uad, caption, data, filepath) VALUES (10002, 3, 'fav resturant', '2022-04-24', 'image3.png');
@@ -182,7 +181,7 @@ INSERT INTO public.tags (tag, upd) VALUES ('yay', 10006);
 INSERT INTO public.tags (tag, upd) VALUES ('congrats', 10006);
 INSERT INTO public.tags (tag, upd) VALUES ('happy', 10007);
 INSERT INTO public.tags (tag, upd) VALUES ('ocean', 10008);
-INSERT INTO public.tags (tag, upd) VALUES ('favorite', 10009;
+INSERT INTO public.tags (tag, upd) VALUES ('favorite', 10009);
 INSERT INTO public.tags (tag, upd) VALUES ('boston', 10010);
 INSERT INTO public.tags (tag, upd) VALUES ('boston', 10011);
 INSERT INTO public.tags (tag, upd) VALUES ('finance', 10012);
@@ -205,25 +204,25 @@ CREATE TABLE public.users (
     hometown character varying,
     gender character varying,
     password character varying,
-    albumnum integer
+    albumnum integer,
     contribution_score integer
 );
 
-INSERT INTO public.users (userid, fname, lname, email, dob, hometown, gender, password, albumnum) VALUES (1, 'John', 'Smith', 'jsmith@gmail.com', '2000-05-03', 'Phoenix', 'M', 'smith12', 0,0);
-INSERT INTO public.users (userid, fname, lname, email, dob, hometown, gender, password, albumnum) VALUES (2, 'Mary', 'James', 'mjames@gmail.com', '1998-11-21', 'Seattle', 'F', 'james34', 1,10);
-INSERT INTO public.users (userid, fname, lname, email, dob, hometown, gender, password, albumnum) VALUES (3, 'Noah', 'Miller', 'nmiller@gmail.com', '2001-02-14', 'Phoenix', 'M', 'miller56', 3,11);
-INSERT INTO public.users (userid, fname, lname, email, dob, hometown, gender, password, albumnum) VALUES (4, 'Olivia', 'Johnson', 'ojohnson@gmail.com', '2003-06-25', 'Springfield', 'F', 'john78', 1,12);
-INSERT INTO public.users (userid, fname, lname, email, dob, hometown, gender, password, albumnum) VALUES (5, 'Sam', 'Williams', 'swilliams@gmail.com', '2000-12-17', 'Franklin', 'M', 'will90', 0,13);
-INSERT INTO public.users (userid, fname, lname, email, dob, hometown, gender, password, albumnum) VALUES (6, 'Nicole', 'Wilson', 'nwilson@gmail.com', '2001-10-30', 'Madison', 'F', 'wilson22', 2,14);
-INSERT INTO public.users (userid, fname, lname, email, dob, hometown, gender, password, albumnum) VALUES (7, 'Sara', 'Miller', 'smiller@gmail.com', '1993-04-23', 'Oakland', 'F', 'mill35', 0,15);
-INSERT INTO public.users (userid, fname, lname, email, dob, hometown, gender, password, albumnum) VALUES (8, 'Mike', 'Jones', 'mjones@gmail.com', '2002-07-16', 'Denver', 'F', 'jones09', 1,27);
-INSERT INTO public.users (userid, fname, lname, email, dob, hometown, gender, password, albumnum) VALUES (9, 'Lisa', 'Davis', 'ldavis@gmail.com', '1997-03-24', 'Boston', 'F', 'davis23', 2,18);
-INSERT INTO public.users (userid, fname, lname, email, dob, hometown, gender, password, albumnum) VALUES (10, 'Liam', 'Brown', 'lbrown@gmail.com', '1999-10-25', 'Chicago', 'M', 'brown79', 1,19);
-INSERT INTO public.users (userid, fname, lname, email, dob, hometown, gender, password, albumnum) VALUES (311, 'Jay', 'Bloc', 'jbloc@asu.edu', '1998-09-30', 'Flagstaff', 'M', 'password11', 2,22)
-INSERT INTO public.users (userid, fname, lname, email, dob, hometown, gender, password, albumnum) VALUES (312, 'Kodak', 'Black', 'kblack@asu.edu', '1999-10-30', 'Oro Heights', 'M', 'password12', 2,33)
-INSERT INTO public.users (userid, fname, lname, email, dob, hometown, gender, password, albumnum) VALUES (313, 'Young', 'Thug', 'ythug@asu.edu', '1997-03-20', 'LA', 'M', 'password13', 2,4)
-INSERT INTO public.users (userid, fname, lname, email, dob, hometown, gender, password, albumnum) VALUES (314, 'Quavo', 'Migos', 'quavo@asu.edu', '1999-04-10', 'San Dimas', 'M', 'password14', 2,5)
-INSERT INTO public.users (userid, fname, lname, email, dob, hometown, gender, password, albumnum) VALUES (315, 'SHOW', 'GALANTIS', 'galantis@asu.edu', '1991-01-10', 'The Valley', 'M', 'password15', 2,6)
+INSERT INTO public.users (userid, fname, lname, email, dob, hometown, gender, password, albumnum,contribution_score) VALUES (1, 'John', 'Smith', 'jsmith@gmail.com', '2000-05-03', 'Phoenix', 'M', 'smith12', 0,0);
+INSERT INTO public.users (userid, fname, lname, email, dob, hometown, gender, password, albumnum,contribution_score) VALUES (2, 'Mary', 'James', 'mjames@gmail.com', '1998-11-21', 'Seattle', 'F', 'james34', 1,10);
+INSERT INTO public.users (userid, fname, lname, email, dob, hometown, gender, password, albumnum,contribution_score) VALUES (3, 'Noah', 'Miller', 'nmiller@gmail.com', '2001-02-14', 'Phoenix', 'M', 'miller56', 3,11);
+INSERT INTO public.users (userid, fname, lname, email, dob, hometown, gender, password, albumnum,contribution_score) VALUES (4, 'Olivia', 'Johnson', 'ojohnson@gmail.com', '2003-06-25', 'Springfield', 'F', 'john78', 1,12);
+INSERT INTO public.users (userid, fname, lname, email, dob, hometown, gender, password, albumnum,contribution_score) VALUES (5, 'Sam', 'Williams', 'swilliams@gmail.com', '2000-12-17', 'Franklin', 'M', 'will90', 0,13);
+INSERT INTO public.users (userid, fname, lname, email, dob, hometown, gender, password, albumnum,contribution_score) VALUES (6, 'Nicole', 'Wilson', 'nwilson@gmail.com', '2001-10-30', 'Madison', 'F', 'wilson22', 2,14);
+INSERT INTO public.users (userid, fname, lname, email, dob, hometown, gender, password, albumnum,contribution_score) VALUES (7, 'Sara', 'Miller', 'smiller@gmail.com', '1993-04-23', 'Oakland', 'F', 'mill35', 0,15);
+INSERT INTO public.users (userid, fname, lname, email, dob, hometown, gender, password, albumnum,contribution_score) VALUES (8, 'Mike', 'Jones', 'mjones@gmail.com', '2002-07-16', 'Denver', 'F', 'jones09', 1,27);
+INSERT INTO public.users (userid, fname, lname, email, dob, hometown, gender, password, albumnum,contribution_score) VALUES (9, 'Lisa', 'Davis', 'ldavis@gmail.com', '1997-03-24', 'Boston', 'F', 'davis23', 2,18);
+INSERT INTO public.users (userid, fname, lname, email, dob, hometown, gender, password, albumnum,contribution_score) VALUES (10, 'Liam', 'Brown', 'lbrown@gmail.com', '1999-10-25', 'Chicago', 'M', 'brown79', 1,19);
+INSERT INTO public.users (userid, fname, lname, email, dob, hometown, gender, password, albumnum,contribution_score) VALUES (311, 'Jay', 'Bloc', 'jbloc@asu.edu', '1998-09-30', 'Flagstaff', 'M', 'password11', 2,22);
+INSERT INTO public.users (userid, fname, lname, email, dob, hometown, gender, password, albumnum,contribution_score) VALUES (312, 'Kodak', 'Black', 'kblack@asu.edu', '1999-10-30', 'Oro Heights', 'M', 'password12', 2,33);
+INSERT INTO public.users (userid, fname, lname, email, dob, hometown, gender, password, albumnum,contribution_score) VALUES (313, 'Young', 'Thug', 'ythug@asu.edu', '1997-03-20', 'LA', 'M', 'password13', 2,4);
+INSERT INTO public.users (userid, fname, lname, email, dob, hometown, gender, password, albumnum,contribution_score) VALUES (314, 'Quavo', 'Migos', 'quavo@asu.edu', '1999-04-10', 'San Dimas', 'M', 'password14', 2,5);
+INSERT INTO public.users (userid, fname, lname, email, dob, hometown, gender, password, albumnum,contribution_score) VALUES (315, 'SHOW', 'GALANTIS', 'galantis@asu.edu', '1991-01-10', 'The Valley', 'M', 'password15', 2,6);
 ALTER TABLE public.users OWNER TO "rootUser";
 
 --
@@ -265,7 +264,6 @@ COPY public.likes (upd, userid, likecount) FROM stdin;
 COPY public.photos (upd, uad, caption, data, filepath) FROM stdin;
 \.
 
-
 --
 -- Data for Name: tags; Type: TABLE DATA; Schema: public; Owner: rootUser
 --
@@ -273,14 +271,12 @@ COPY public.photos (upd, uad, caption, data, filepath) FROM stdin;
 COPY public.tags (tag, upd) FROM stdin;
 \.
 
-
 --
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: rootUser
 --
 
 COPY public.users (userid, fname, lname, email, dob, hometown, gender, password, albumnum) FROM stdin;
 \.
-
 
 --
 -- Name: albums albums_pkey; Type: CONSTRAINT; Schema: public; Owner: rootUser
