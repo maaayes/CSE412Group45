@@ -11,23 +11,22 @@ from tkinter import filedialog, messagebox
 from tkinter import ttk
 #Declare some Global Variables, We will use these Quite A Bit.
 global conn
-conn = dba.create_conn()
+conn = dba.createConn()
 global realUser
 realUser = None
-global contribution_score
 global userID
 global various
 various = 0
-global photo_locations
-photo_locations = []
+global photoLocations
+photoLocations = []
 #Little helper that is used to retrive locally stored photos
-def pop_photos():
-    conn = dba.create_conn()
+def popPhotos():
+    conn = dba.createConn()
     try:
         global userID
-        results = dba.get_all_photos_for_album(conn,userID) #userID is used as UAD for home photos
+        results = dba.getAllPhotosForAlbum(conn,userID) #userID is used as UAD for home photos
         for i in results:
-            photo_locations.append({'id': i[0], 'path': i[4], 'caption': i[2], 'date': i[3]})
+            photoLocations.append({'id': i[0], 'path': i[4], 'caption': i[2], 'date': i[3]})
             print(i)
     except Exception as error:
         print(error)
@@ -38,16 +37,16 @@ class WelcomeWindow:
         master.geometry("500x500")
         master.title("App Landing Page")
         #Basic Button Setup
-        self.button = tk.Button(master, text="Log In", command=self.switch_window1)
+        self.button = tk.Button(master, text="Log In", command=self.switchWindow1)
         self.button.pack(pady=50)
-        self.button = tk.Button(master, text="Sign Up", command=self.switch_window2)
+        self.button = tk.Button(master, text="Sign Up", command=self.switchWindow2)
         self.button.pack(pady=50)
         
-    def switch_window1(self):
+    def switchWindow1(self):
         self.master.withdraw() 
         self.newWindow = tk.Toplevel(self.master)
         self.app = LoginScreen(self.newWindow)
-    def switch_window2(self):
+    def switchWindow2(self):
         self.master.withdraw() 
         self.newWindow = tk.Toplevel(self.master)
         self.app = SignUpScreen(self.newWindow)
@@ -60,33 +59,33 @@ class LoginScreen:
         
         self.ulabel = tk.Label(master, text="User ID:")
         self.ulabel.pack()
-        self.utext_box = tk.Text(master, width=50,height = 3)
-        self.utext_box.pack()
+        self.utextBox = tk.Text(master, width=50,height = 3)
+        self.utextBox.pack()
         
         self.plabel = tk.Label(master, text="Password:")
         self.plabel.pack()
-        self.ptext_box = tk.Text(master, width=50, height=3)
-        self.ptext_box.pack()
+        self.ptextBox = tk.Text(master, width=50, height=3)
+        self.ptextBox.pack()
         
-        self.button = tk.Button(master, text="Log In", command=self.get_input)
+        self.button = tk.Button(master, text="Log In", command=self.getInput)
         self.button.pack(pady=50)
-    def get_input(self):
+    def getInput(self):
         #We use end-1c because this trims the \n character that we were getting here.
-        user_id = self.utext_box.get(1.0, 'end-1c')
-        password = self.ptext_box.get(1.0, 'end-1c')
+        userId = self.utextBox.get(1.0, 'end-1c')
+        password = self.ptextBox.get(1.0, 'end-1c')
 
         try:
             #establish connection
-            conn = dba.create_conn()
+            conn = dba.createConn()
             #populate a realuser
-            realUser = dba.select_user_by_id_and_password(conn, user_id, password)
+            realUser = dba.selectUserByIdAndPassword(conn, userId, password)
             #Now we check if there is a present user and there password matches
             if realUser and realUser[7] == password:
                 global userID
                 userID = realUser[0] #Set userID as person is now logged in
                   
-                pop_photos() #init the photo method so we can load there feed when they login
-                self.switch_window(user_id)
+                popPhotos() #init the photo method so we can load there feed when they login
+                self.switchWindow(userId)
                 
             else:
                 print("Invalid Entry. Try Again.")
@@ -96,7 +95,7 @@ class LoginScreen:
         except Exception as error:
             print("Error:", error)
    
-    def switch_window(self, user_id):
+    def switchWindow(self, userId):
         self.master.withdraw()
         self.newWindow = tk.Toplevel(self.master)
         self.app = HomePage(self.newWindow)
@@ -110,282 +109,309 @@ class SignUpScreen:
         #Bunch of boring labels, they setup the register screen, flabel is first name
         flabel = tk.Label(master, text="First Name:")
         flabel.pack()
-        self.ftext_box = tk.Text(master, width=30,height=3)
-        self.ftext_box.pack()
+        self.ftextBox = tk.Text(master, width=30,height=3)
+        self.ftextBox.pack()
         #last name label
         llabel = tk.Label(master, text="Last Name:")
         llabel.pack()
-        self.ltext_box = tk.Text(master, width=30,height=3)
-        self.ltext_box.pack()
+        self.ltextBox = tk.Text(master, width=30,height=3)
+        self.ltextBox.pack()
         #email label
         self.elabel = tk.Label(master, text="Email:")
         self.elabel.pack()
-        self.etext_box = tk.Text(master, width=30,height=3)
-        self.etext_box.pack()
+        self.etextBox = tk.Text(master, width=30,height=3)
+        self.etextBox.pack()
         #user ID label
         self.uidlabel = tk.Label(master, text="User ID:")
         self.uidlabel.pack()
-        self.uidtext_box = tk.Text(master, width=30,height=3)
-        self.uidtext_box.pack()
+        self.uidtextBox = tk.Text(master, width=30,height=3)
+        self.uidtextBox.pack()
         #password label 
         self.passlabel = tk.Label(master, text="Password")
         self.passlabel.pack()
-        self.passtext_box = tk.Text(master, width=30,height=3)
-        self.passtext_box.pack()
+        self.passtextBox = tk.Text(master, width=30,height=3)
+        self.passtextBox.pack()
         #hometown label
         self.htlabel = tk.Label(master, text="Hometown:")
         self.htlabel.pack()
-        self.httext_box = tk.Text(master, width=30,height=3)
-        self.httext_box.pack()
+        self.httextBox = tk.Text(master, width=30,height=3)
+        self.httextBox.pack()
         #gender label
         self.genlabel = tk.Label(master, text="Gender:")
         self.genlabel.pack()
         #various options are stored here, other is used to simplfy things
-        gender_options = ["Male", "Female", "Other"]
-        self.selected_gender = tk.StringVar()
-        self.selected_gender.set(gender_options[0])
-        self.gender_menu = tk.OptionMenu(master, self.selected_gender, *gender_options)
-        self.gender_menu.pack()  
+        genderOptions = ["Male", "Female", "Other"]
+        self.selectedGender = tk.StringVar()
+        self.selectedGender.set(genderOptions[0])
+        self.genderMenu = tk.OptionMenu(master, self.selectedGender, *genderOptions)
+        self.genderMenu.pack()  
         #Setup dob here
         self.doblabel = tk.Label(master, text="Date of Birth:")
         self.doblabel.pack()
-        self.dob_entry = DateEntry(master, width=15, background='darkblue',foreground='white', borderwidth=2)
-        self.dob_entry.pack(padx=10, pady=10)
+        self.dobEntry = DateEntry(master, width=15, background='darkblue',foreground='white', borderwidth=2)
+        self.dobEntry.pack(padx=10, pady=10)
         
-        self.button = tk.Button(master, text="Create Your Account", command=self.get_input)
+        self.button = tk.Button(master, text="Create Your Account", command=self.getInput)
         self.button.pack(pady=5)
         
         self.button = tk.Button(master, text="Back to Home", command=self.back)
         self.button.pack(pady=5)
-    #  print(httext_box)
+    #  print(httextBox)
      
     def back(self):
         self.master.withdraw()  
         self.newWindow = tk.Toplevel(self.master)  
         self.app = WelcomeWindow(self.newWindow) 
         
-    def switch_window(self):
+    def switchWindow(self):
         self.master.withdraw() 
         self.newWindow = tk.Toplevel(self.master) 
         self.app = HomePage(self.newWindow)\
     #Real driver function here
-    def get_input(self):
+    def getInput(self):
         #Retrives all the labels text values after they have been entered
-        fname = self.ftext_box.get(1.0, 'end-1c')
-        lname = self.ltext_box.get(1.0, 'end-1c')
-        email = self.etext_box.get(1.0, 'end-1c')
-        user_id = self.uidtext_box.get(1.0, 'end-1c')
-        hometown = self.httext_box.get(1.0, 'end-1c')
-        gender = self.selected_gender.get()
-        dob = self.dob_entry.get_date()
-        password = self.passtext_box.get(1.0,'end-1c') # Add a widget to get the user's password, and retrieve it here
-        album_num = 0 # most users start with 0 albums, hopefully.
+        fname = self.ftextBox.get(1.0, 'end-1c')
+        lname = self.ltextBox.get(1.0, 'end-1c')
+        email = self.etextBox.get(1.0, 'end-1c')
+        userId = self.uidtextBox.get(1.0, 'end-1c')
+        hometown = self.httextBox.get(1.0, 'end-1c')
+        gender = self.selectedGender.get()
+        dob = self.dobEntry.getDate()
+        password = self.passtextBox.get(1.0,'end-1c') # Add a widget to get the user's password, and retrieve it here
+        albumNum = 0 # most users start with 0 albums, hopefully.
         try:
             #Setup connection
-            conn = dba.create_conn()
-            dba.insert_user(user_id, fname, lname, email, dob, hometown, gender, password, album_num,conn) #make database call
-            conn = dba.create_conn()
-            realUser = dba.select_user_by_id(conn,user_id)
+            conn = dba.createConn()
+            dba.insertUser(userId, fname, lname, email, dob, hometown, gender, password, albumNum,conn) #make database call
+            conn = dba.createConn()
+            realUser = dba.selectUserById(conn,userId)
             global userID
-            userID = user_id #set user as they are loggedin
-            pop_photos() #fill feed anyways even though it should be empty
+            userID = userId #set user as they are loggedin
+            popPhotos() #fill feed anyways even though it should be empty
         except():
             print("Invalid Entry Try Again")
         
-        self.switch_window()
+        self.switchWindow()
     
 class HomePage:
     def __init__(self, master):
         self.master = master
         master.geometry("800x500")
-        master.title("User Home Page")
+        master.title("User xHome Page")
+        self.photoLocations = []
+        self.createUiElements(master)
+        self.configureFeed()
         
-        # Custom font
-        custom_font = ("Helvetica", 12, "bold")
+    #Wrap Ui Eles in Func
+    def createUiElements(self, master):
+        customFont = ("Helvetica", 12, "bold") #nice font
 
-        # Styling for buttons
-        button_bg = "#007BFF" #light grey
-        button_fg = "#000000" #black
-        button_active_bg = "#0056B3" #grey
-        button_active_fg = "#000000" #black
+        buttonFrame = self.createButtonFrame(master, customFont)
+        #feedFrame is going to contain our instagram feed
+        feedFrame, feedCanvas = self.createFeedFrame(master)
+        feedFrame.pack(side='left', fill='both', expand=True, padx=10, pady=10)
+        #scrollBar helper func
+        scrollbar = self.createScrollbar(feedFrame, feedCanvas)
+        scrollbar.pack(side='right', fill='y')
 
-        button_frame = tk.Frame(master)
-        button_frame.pack(side='right', fill='y', padx=10, pady=10)
-        #Setup Buttons Here
-        self.search_button = tk.Button(button_frame, text="Search", command=self.switch_to_search, font=custom_font, bg=button_bg, fg=button_fg, activebackground=button_active_bg, activeforeground=button_active_fg, relief="solid", bd=1, borderwidth=0)
-        self.search_button.pack(pady=10, side='top')
-        
-        self.upload_button = tk.Button(button_frame, text="Upload Photo", command=self.switch_to_upload, font=custom_font, bg=button_bg, fg=button_fg, activebackground=button_active_bg, activeforeground=button_active_fg, relief="solid", bd=1, borderwidth=0)
-        self.upload_button.pack(pady=10, side='top')
+        innerFeedFrame = self.createInnerFeedFrame(feedCanvas)
+        self.addRandomImages(innerFeedFrame)
 
-        self.friends_button = tk.Button(button_frame, text="Friends", command=self.switch_to_friends, font=custom_font, bg=button_bg, fg=button_fg, activebackground=button_active_bg, activeforeground=button_active_fg, relief="solid", bd=1, borderwidth=0)
-        self.friends_button.pack(pady=10, side='top')
+        # Pack the buttonFrame after all other elements are created and packed
+        buttonFrame.pack(side='right', fill='y', padx=10, pady=10)
 
-        self.album_button = tk.Button(button_frame, text="Albums", command=self.switch_to_albums, font=custom_font, bg=button_bg, fg=button_fg, activebackground=button_active_bg, activeforeground=button_active_fg, relief="solid", bd=1, borderwidth=0)
-        self.album_button.pack(pady=10, side='top')
-        
-        self.profile_button = tk.Button(button_frame, text="Edit Profile", command=self.switch_to_profile, font=custom_font, bg=button_bg, fg=button_fg, activebackground=button_active_bg, activeforeground=button_active_fg, relief="solid", bd=1, borderwidth=0)
-        self.profile_button.pack(pady=10, side='top')
-        
-        self.profile_button = tk.Button(button_frame, text="Recommended Friends", command=self.switch_to_rec, font=custom_font, bg=button_bg, fg=button_fg, activebackground=button_active_bg, activeforeground=button_active_fg, relief="solid", bd=1, borderwidth=0)
-        self.profile_button.pack(pady=10, side='top')
-        
-        self.profile_button = tk.Button(button_frame, text="Contribution Score", command=self.switch_to_cs, font=custom_font, bg=button_bg, fg=button_fg, activebackground=button_active_bg, activeforeground=button_active_fg, relief="solid", bd=1, borderwidth=0)
-        self.profile_button.pack(pady=10, side='top')
-        
-        # Scrollable feed in the middle
-        feed_frame = ttk.Frame(master) #special tinkter tink
-        feed_frame.pack(side='left', fill='both', expand=True, padx=10, pady=10)
+    #On click change
+    def updateScrollRegion(event):
+        feedCanvas.configure(scrollregion=feedCanvas.bbox("all")) 
+        innerFeedFrame.bind("<Configure>", updateScrollRegion) #bind is a cool function we binde configure so that on updateScrollRegion we change the innerframe contents
+        return innerFeedFrame
+    #Sets up Button Frame
+    def createButtonFrame(self, master, customFont):
+        buttonBg = "#007BFF" #light grey
+        buttonFg = "#000000" #black
+        buttonActiveBg = "#0056B3" #light grey
+        buttonActiveFg = "#000000" #black
 
-        feed_canvas = tk.Canvas(feed_frame, bg='white')
-        feed_canvas.pack(side='left', fill='both', expand=True)
+        buttonFrame = tk.Frame(master)
+        #Store buttons in tuple list with name and function so we can iterate through them
+        buttons = [
+            ("Search", self.switchToSearch), 
+            ("Upload Photo", self.switchToUpload),
+            ("Friends", self.switchToFriends),
+            ("Albums", self.switchToAlbums),
+            ("Edit Profile", self.switchToProfile),
+            ("Trending Tags", self.switchToTrending),
+            ("Recommended Friends", self.switch_to_rec),
+            ("Contribution Score", self.switch_to_cs)
+        ]
 
-        scrollbar = tk.Scrollbar(feed_frame, orient='vertical', command=feed_canvas.yview)
-        scrollbar.pack(side='left', fill='y')
+        for text, command in buttons:
+            button = tk.Button(buttonFrame, text=text, command=command, font=customFont, bg=buttonBg, fg=buttonFg, activebackground=buttonActiveBg, activeforeground=buttonActiveFg, relief="solid", bd=1, borderwidth=0)
+            button.pack(pady=10, side='top')
 
-        feed_canvas.configure(yscrollcommand=scrollbar.set)
-        feed_canvas.bind('<Configure>', lambda e: feed_canvas.configure(scrollregion=feed_canvas.bbox('all')))
+        return buttonFrame
+    #helper funciton sets up feed
+    def createFeedFrame(self, master):
+        feedFrame = ttk.Frame(master) #ttk is special library from tinkter with fun sub methods for building ui
+        feedCanvas = tk.Canvas(feedFrame, bg='white')
+        feedCanvas.pack(side='left', fill='both', expand=True)
+        return feedFrame, feedCanvas
+    #Create ScrolLBar
+    def createScrollbar(self, feedFrame, feedCanvas):
+        scrollbar = tk.Scrollbar(feedFrame, orient='vertical', command=feedCanvas.yview) #basic scrollbar setup orient vertical instead of horizontal
+        feedCanvas.configure(yscrollcommand=scrollbar.set)
+        feedCanvas.bind('<Configure>', lambda e: feedCanvas.configure(scrollregion=feedCanvas.bbox('all'))) #lambda means this is gonna run through all bbox in feedcanvas
+        return scrollbar
+    #within our feed we have an inner method that will hold the photos
+    def createInnerFeedFrame(self, feedCanvas):
+        innerFeedFrame = tk.Frame(feedCanvas, bg='white')
+        feedCanvas.create_window((0, 0), window=innerFeedFrame, anchor='nw')
+        return innerFeedFrame
+    #setup feed here by getting all the photos and randomly shufflying them
+    def configureFeed(self):
+        self.photoLocations = dba.getAllPhotos(conn) #this is a cool call gets all photo info
+        random.shuffle(self.photoLocations)
+    #load photos from dba
+    def addRandomImages(self, innerFeedFrame):
+        self.photoLocations = dba.getAllPhotos(conn) #get all photo info
+        for photoInfo in self.photoLocations:
+            print(photoInfo)
+            self.displayPhoto(innerFeedFrame, photoInfo) #iterate photos and siplay them
+    def displayPhoto(self, innerFeedFrame, photoInfo):
+        print(photoInfo)
+        photoId = photoInfo['upd']
+        photoPath = photoInfo['filepath']
+        caption = photoInfo['caption']
+        date = photoInfo['data']
+        #print(photoPath)
+        selectPhoto = dba.selectPhotoByUpd(conn, photoId)  #call photo upload feature
 
-        inner_feed_frame = tk.Frame(feed_canvas, bg='white')
-        feed_canvas.create_window((0, 0), window=inner_feed_frame, anchor='nw')
-
-        self.add_images(inner_feed_frame)
-        
-    def add_images(self, inner_feed_frame):
-        for photo_info in photo_locations:
-            self.display_photo(inner_feed_frame, photo_info) #loop through all photos and call display photo function
-
-    def display_photo(self, inner_feed_frame, photo_info):
-        photo_id = photo_info['id']
-        photo_path = photo_info['path']
-        caption = photo_info['caption']
-        date = photo_info['date']
-
-        select_photo = dba.select_photo_by_upd(conn, photo_id)  #call photo upload feature
-
-        image_label = tk.Label(inner_feed_frame, bg='white', borderwidth=2, relief="groove")
-        image_label.image = self.load_image_from_path(photo_path)
-        image_label.config(image=image_label.image)
-        image_label.pack(pady=10,anchor='center')
+        imageLabel = tk.Label(innerFeedFrame, bg='white', borderwidth=2, relief="groove")
+        imageLabel.image = self.loadImageFromPath(photoPath)
+        imageLabel.config(image=imageLabel.image)
+        imageLabel.pack(pady=10,anchor='center')
        
         
-        like_button_text = tk.StringVar()
-        like_button_text.set("Like")
-        like_button = tk.Button(inner_feed_frame, textvariable=like_button_text, command=lambda: self.like_photo(photo_id, like_button_text))
-        like_button.pack()
+        likeButtonText = tk.StringVar()
+        likeButtonText.set("Like")
+        likeButton = tk.Button(innerFeedFrame, textvariable=likeButtonText, command=lambda: self.likePhoto(photoId, likeButtonText))
+        likeButton.pack()
         # Add comment button and comment section
-        comment_button = tk.Button(inner_feed_frame, text="Comments", command=lambda: self.show_comments_popup(photo_id))
-        comment_button.pack()
+        commentButton = tk.Button(innerFeedFrame, text="Comments", command=lambda: self.showCommentsPopup(photoId))
+        commentButton.pack()
 
         # Add tags button and tag section
-        tag_button = tk.Button(inner_feed_frame, text="Tags", command=lambda: self.show_tags_popup(photo_id))
-        tag_button.pack()
+        tagButton = tk.Button(innerFeedFrame, text="Tags", command=lambda: self.showTagsPopup(photoId))
+        tagButton.pack()
 
-        caption_label = tk.Label(inner_feed_frame, text=caption, font=("Helvetica", 10, "bold"), bg='white', wraplength=200, justify='center')
-        caption_label.pack()
+        captionLabel = tk.Label(innerFeedFrame, text=caption, font=("Helvetica", 10, "bold"), bg='white', wraplength=200, justify='center')
+        captionLabel.pack()
 
-        date_label = tk.Label(inner_feed_frame, text=date, font=("Helvetica", 8), bg='white')
-        date_label.pack()
+        dateLabel = tk.Label(innerFeedFrame, text=date, font=("Helvetica", 8), bg='white')
+        dateLabel.pack()
 
     # Like photo method
-    def like_photo(self, photo_id,like_button_text):
-         if like_button_text.get() == "Like":
+    def likePhoto(self, photoId,likeButtonText):
+         if likeButtonText.get() == "Like":
             
-            dba.increment_like_count(conn, photo_id)
+            dba.incrementLikeCount(conn, photoId)
             dba.inc_contribution_score(conn, user_id, contribution_score)
-            like_button_text.set("Unlike")
+            likeButtonText.set("Unlike")
          else:
           
-            dba.decrement_like_count(conn, photo_id)
+            dba.decrementLikeCount(conn, photoId)
             dba.dec_contribution_score(conn, user_id, contribution_score)
-            like_button_text.set("Like")
+            likeButtonText.set("Like")
 
         
     # Show comments popup
-    def show_comments_popup(self, photo_id):
+    def showCommentsPopup(self, photoId):
         
-        comments = dba.select_comments_by_upd(conn,photo_id)
-        comments_popup = tk.Toplevel()
-        comments_popup.title("Comments")
+        comments = dba.selectCommentsByUpd(conn,photoId)
+        commentsPopup = tk.Toplevel()
+        commentsPopup.title("Comments")
 
     # Create a Listbox to display the comments
-        comments_listbox = tk.Listbox(comments_popup, width=50, height=10)
-        comments_listbox.pack()
+        commentsListbox = tk.Listbox(commentsPopup, width=50, height=10)
+        commentsListbox.pack()
 
     # Display existing comments
         if(len(comments) > 1):
             for comment in comments:
         # Add each comment to the Listbox
-                comments_listbox.insert(tk.END, comment)
+                commentsListbox.insert(tk.END, comment)
 
     # Add new comment entry and submit button
-        new_comment_entry = tk.Entry(comments_popup)
-        new_comment_entry.pack()
+        newCommentEntry = tk.Entry(commentsPopup)
+        newCommentEntry.pack()
 
-        submit_comment_button = tk.Button(comments_popup, text="Submit Comment", command=lambda: self.submit_comment(photo_id, new_comment_entry.get()))
-        submit_comment_button.pack()
+        submitCommentButton = tk.Button(commentsPopup, text="Submit Comment", command=lambda: self.submitComment(photoId, newCommentEntry.get()))
+        submitCommentButton.pack()
 
     # Submit comment method
-    def submit_comment(self, photo_id, comment_text):
+    def submitComment(self, photoId, commentText):
         x = random.randint(0,500000)
-        dba.insert_comment(conn,x,comment_text,userID,photo_id,datetime.datetime.now().strftime("%Y-%m-%d"))
-        dba.inc_contribution_score(conn, user_id, contribution_score)
-        if hasattr(self, 'comments_popup') and self.comments_popup:
-            self.comments_popup.destroy()
-        self.show_comments_popup(photo_id)
-    def show_tags_popup(self, photo_id):
-        if hasattr(self, 'tags_popup') and self.tags_popup:
-            self.tags_popup.destroy()
-        tags_popup = tk.Toplevel()
-        tags_popup.title("Tags")
+        dba.insertComment(conn,x,commentText,userID,photoId,datetime.datetime.now().strftime("%Y-%m-%d"))
+        dba.inc_contribution_score(conn, userId, contributionScore)
+        if hasattr(self, 'commentsPopup') and self.commentsPopup:
+            self.commentsPopup.destroy()
+        self.showCommentsPopup(photoId)
+    def showTagsPopup(self, photoId):
+        if hasattr(self, 'tagsPopup') and self.tagsPopup:
+            self.tagsPopup.destroy()
+        tagsPopup = tk.Toplevel()
+        tagsPopup.title("Tags")
     
-        tags_listbox = tk.Listbox(tags_popup, width=50, height=10)
-        tags_listbox.pack()
+        tagsListbox = tk.Listbox(tagsPopup, width=50, height=10)
+        tagsListbox.pack()
 
-        tags = dba.select_tags_by_upd(conn, photo_id)
+        tags = dba.selectTagsByUpd(conn, photoId)
         for tag in tags:
-            tags_listbox.insert(tk.END, tag)
+            tagsListbox.insert(tk.END, tag)
 
-        new_tag_entry = tk.Entry(tags_popup)
-        new_tag_entry.pack()
+        newTagEntry = tk.Entry(tagsPopup)
+        newTagEntry.pack()
 
-        submit_tag_button = tk.Button(tags_popup, text="Submit Tag", command=lambda: self.submit_tag(photo_id, new_tag_entry.get()))
-        submit_tag_button.pack()
+        submitTagButton = tk.Button(tagsPopup, text="Submit Tag", command=lambda: self.submitTag(photoId, newTagEntry.get()))
+        submitTagButton.pack()
 
     # Submit tag method
-    def submit_tag(self, photo_id, tag_text):
-        dba.insert_tag(conn,tag_text,photo_id)
-        self.show_tags_popup(photo_id)
+    def submitTag(self, photoId, tagText):
+        dba.insertTag(conn,tagText,photoId)
+        self.showTagsPopup(photoId)
         
-    def load_image_from_path(self, filepath):
+    def loadImageFromPath(self, filepath):
         from PIL import Image, ImageTk
 
         img = Image.open(filepath)
         self.master.update()
         img = img.resize((int(self.master.winfo_width() / 4), int(self.master.winfo_height() / 4)), Image.LANCZOS)
         return ImageTk.PhotoImage(img)
-    
-    def switch_to_friends(self):
+    def switchToTrending(self):
+        self.master.withdraw()
+        self.newWindow = tk.Toplevel(self.master)
+        self.app = TrendingTags(self.newWindow)
+    def switchToFriends(self):
         self.master.withdraw()
         self.newWindow = tk.Toplevel(self.master) 
         self.app = Friends(self.newWindow)
-    def switch_to_profile(self):
+    def switchToProfile(self):
         self.master.withdraw() 
         self.newWindow = tk.Toplevel(self.master) 
         self.app = MyProfile(self.newWindow) 
-    def switch_to_upload(self):
+    def switchToUpload(self):
         self.master.withdraw()
         self.newWindow = tk.Toplevel(self.master) 
         self.app = UploadPhoto(self.newWindow)
-    def switch_to_create_album(self):
+    def switchToCreateAlbum(self):
         self.master.withdraw()
         self.newWindow = tk.Toplevel(self.master) 
         self.app =  AlbumsPage(self.newWindow)
-    def switch_to_search(self):
+    def switchToSearch(self):
         self.master.withdraw()
         self.newWindow = tk.Toplevel(self.master) 
         self.app = Search(self.newWindow)
-    def switch_to_albums(self):
+    def switchToAlbums(self):
         self.master.withdraw()
         self.newWindow = tk.Toplevel(self.master)
         self.app = AlbumsPage(self.newWindow)
@@ -407,38 +433,38 @@ class AlbumsPage:
         master.geometry("800x500")
         master.title("Albums")
         #Set up Album Label
-        self.title_label = tk.Label(master, text="Albums", font=("Helvetica", 16))
-        self.title_label.pack(pady=10)
+        self.titleLabel = tk.Label(master, text="Albums", font=("Helvetica", 16))
+        self.titleLabel.pack(pady=10)
         #Frame Albums
-        self.albums_frame = tk.Frame(master)
-        self.albums_frame.pack(pady=10)
+        self.albumsFrame = tk.Frame(master)
+        self.albumsFrame.pack(pady=10)
 
-        self.load_albums()
+        self.loadAlbums()
         #Redirect to Create Album
-        create_button = tk.Button(master, text="Create Album", command=self.create_album, bg='#f0f0f0', width=15)
-        create_button.pack(pady=10)
+        createButton = tk.Button(master, text="Create Album", command=self.createAlbum, bg='#f0f0f0', width=15)
+        createButton.pack(pady=10)
 
-        back_button = tk.Button(master, text="Back", command=self.back, bg='#f0f0f0', width=15)
-        back_button.pack(pady=10)
+        backButton = tk.Button(master, text="Back", command=self.back, bg='#f0f0f0', width=15)
+        backButton.pack(pady=10)
 
     def back(self):
         self.master.withdraw()
         self.newWindow = tk.Toplevel(self.master)
         self.app = HomePage(self.newWindow)
 
-    def load_albums(self):
-        albums = dba.select_albums_by_uid(conn, userID) #Call dba all albums by UID
+    def loadAlbums(self):
+        albums = dba.selectAlbumsByUid(conn, userID) #Call dba all albums by UID
 
         for album in albums:
-            album_button = tk.Button(self.albums_frame, text=album[1], command=lambda a=album[0]: self.view_album(a)) #Dispolay album info
-            album_button.pack(side=tk.LEFT, padx=10) #Center to left
+            albumButton = tk.Button(self.albumsFrame, text=album[1], command=lambda a=album[0]: self.viewAlbum(a)) #Dispolay album info
+            albumButton.pack(side=tk.LEFT, padx=10) #Center to left
 
-    def view_album(self, uad):
+    def viewAlbum(self, uad):
         self.master.withdraw()
         self.newWindow = tk.Toplevel(self.master)
         self.app = ViewAlbum(self.newWindow, uad)
 
-    def create_album(self):
+    def createAlbum(self):
         self.master.withdraw()
         self.newWindow = tk.Toplevel(self.master)
         self.app = CreateAlbum(self.newWindow)
@@ -450,26 +476,26 @@ class CreateAlbum:
         master.geometry("500x500")
         master.title("Create Album")
         #Setup Album Name Labels
-        self.album_name_label = tk.Label(master, text="Album Name:", font=("Helvetica", 14))
-        self.album_name_label.pack(pady=10)
+        self.albumNameLabel = tk.Label(master, text="Album Name:", font=("Helvetica", 14))
+        self.albumNameLabel.pack(pady=10)
         #Get Album Entry
-        self.album_name_entry = tk.Entry(master)
-        self.album_name_entry.pack()
+        self.albumNameEntry = tk.Entry(master)
+        self.albumNameEntry.pack()
         #Submit Create Info
-        create_button = tk.Button(master, text="Create", command=self.create_album, bg='#f0f0f0', width=15)
-        create_button.pack(pady=10)
+        createButton = tk.Button(master, text="Create", command=self.createAlbum, bg='#f0f0f0', width=15)
+        createButton.pack(pady=10)
 
-        back_button = tk.Button(master, text="Back", command=self.back, bg='#f0f0f0', width=15)
-        back_button.pack(pady=10)
+        backButton = tk.Button(master, text="Back", command=self.back, bg='#f0f0f0', width=15)
+        backButton.pack(pady=10)
 
     def back(self):
         self.master.withdraw()
         self.newWindow = tk.Toplevel(self.master)
         self.app = HomePage(self.newWindow)
 
-    def create_album(self):
-        album_name = self.album_name_entry.get()
-        if not album_name:
+    def createAlbum(self):
+        albumName = self.albumNameEntry.get()
+        if not albumName:
             messagebox.showerror("Error", "Album name cannot be empty") #Need valid Album
         else:
             uad = random.randint(1,15000) #Set random unique album
@@ -478,7 +504,7 @@ class CreateAlbum:
             doc = datetime.datetime.now()
 
             # Insert the album into the database
-            dba.insert_album(conn, uad, album_name, userID, doc)
+            dba.insertAlbum(conn, uad, albumName, userID, doc)
             messagebox.showinfo("Success", "Album created successfully")
 
             # Redirect to the newly created album view
@@ -495,79 +521,80 @@ class ViewAlbum:
         master.title("View Album")
 
         # Fetch album name and display it
-        album = dba.select_album_by_uad(conn, uad)
+        album = dba.selectAlbumByUad(conn, uad)
         if album:
-            self.album_name = album[1] #Get Album in Column 1
+            self.albumName = album[1] #Get Album in Column 1
         else:
-            self.album_name = "Untitled Album"
+            self.albumName = "Untitled Album"
         #Setup Album Labels
-        self.album_name_label = tk.Label(master, text=self.album_name, font=("Helvetica", 18))
-        self.album_name_label.pack(pady=10)
+        self.albumNameLabel = tk.Label(master, text=self.albumName, font=("Helvetica", 18))
+        self.albumNameLabel.pack(pady=10)
 
         #Setup Title Labels
-        self.title_label = tk.Label(master, text="Album Photos", font=("Helvetica", 16))
-        self.title_label.pack(pady=10)
+        self.titleLabel = tk.Label(master, text="Album Photos", font=("Helvetica", 16))
+        self.titleLabel.pack(pady=10)
         #Setup Photo Frames
-        self.photos_frame = tk.Frame(master)
-        self.photos_frame.pack(pady=10)
+        self.photosFrame = tk.Frame(master)
+        self.photosFrame.pack(pady=10)
         #Loop Photos
-        self.load_photos()
+        self.loadPhotos()
         #Setup Add Photo
-        add_photo_button = tk.Button(master, text="Add Photo", command=self.add_photo, bg='#f0f0f0', width=15)
-        add_photo_button.pack(pady=10)
+        addPhotoButton = tk.Button(master, text="Add Photo", command=self.addPhoto, bg='#f0f0f0', width=15)
+        addPhotoButton.pack(pady=10)
 
-        back_button = tk.Button(master, text="Back", command=self.back, bg='#f0f0f0', width=15)
-        back_button.pack(pady=10)
+        backButton = tk.Button(master, text="Back", command=self.back, bg='#f0f0f0', width=15)
+        backButton.pack(pady=10)
 
     def back(self):
         self.master.withdraw()
         self.newWindow = tk.Toplevel(self.master)
         self.app = AlbumsPage(self.newWindow)
 
-    def load_photos(self):
-        photos = dba.select_photos_by_uad(conn, self.uad) #Get photos within the unique album identifier
+    def loadPhotos(self):
+        photos = dba.selectPhotosByUad(conn, self.uad) #Get photos within the unique album identifier
+        if(photos != None):
+            for photo in photos:
+                img = Image.open(photo[4])   #Get photo at filepath
+                img = img.resize((100, 100), Image.ANTIALIAS) #Create Image
+                img = ImageTk.PhotoImage(img)
 
-        for photo in photos:
-            img = Image.open(photo[4])   #Get photo at filepath
-            img = img.resize((100, 100), Image.ANTIALIAS) #Create Image
-            img = ImageTk.PhotoImage(img)
-
-            photo_label = tk.Label(self.photos_frame, image=img) #Setup Photo Labels
-            photo_label.image = img
-            photo_label.pack(side=tk.LEFT, padx=10)
+                photoLabel = tk.Label(self.photosFrame, image=img) #Setup Photo Labels
+                photoLabel.image = img
+                photoLabel.pack(side=tk.LEFT, padx=10)
     #Adding Photo
-    def add_photo(self):
+    def addPhoto(self):
         filepath = filedialog.askopenfilename(initialdir="/", title="Select file",filetypes=(("jpeg files", "*.jpg"), ("png files", "*.png"), ("all files", "*.*"))) #Get all photo types
         if filepath:
-            self.selected_filepath = filepath   #Setup filepath
-            self.caption_window = tk.Toplevel(self.master)
-            self.caption_window.title("Enter Caption")#Setup seperate caption captuer
-            self.caption_label = tk.Label(self.caption_window, text="Enter a caption for this photo:", font=("Helvetica", 14)) #Capture caption
-            self.caption_label.pack(pady=10)
-            self.caption_entry = tk.Entry(self.caption_window)
-            self.caption_entry.pack()
-            self.submit_caption_button = tk.Button(self.caption_window, text="Submit", command=self.submit_caption, bg='#f0f0f0', width=15)
-            self.submit_caption_button.pack(pady=10) #Send Caption Back
+            self.selectedFilepath = filepath   #Setup filepath
+            self.captionWindow = tk.Toplevel(self.master)
+            self.captionWindow.title("Enter Caption")#Setup seperate caption captuer
+            self.captionLabel = tk.Label(self.captionWindow, text="Enter a caption for this photo:", font=("Helvetica", 14)) #Capture caption
+            self.captionLabel.pack(pady=10)
+            self.captionEntry = tk.Entry(self.captionWindow)
+            self.captionEntry.pack()
+            self.submitCaptionButton = tk.Button(self.captionWindow, text="Submit", command=self.submitCaption, bg='#f0f0f0', width=15)
+            self.submitCaptionButton.pack(pady=10) #Send Caption Back
         else:
             messagebox.showinfo("Info", "No file was selected.")
 
-    def submit_caption(self):
-        caption = self.caption_entry.get()
-        filepath = self.selected_filepath
+    def submitCaption(self):
+        caption = self.captionEntry.get()
+        filepath = self.selectedFilepath
 
         with open(filepath, "rb") as file:
             data = file.read()
 
-        dba.insert_photo(conn, random.randint(1100,23000), self.uad, caption, data, filepath) #Pass photo with caption in
+        dba.insertPhoto(conn, random.randint(1100,23000), self.uad, caption, data, filepath) #Pass photo with caption in
 
         # Close the caption window
-        self.caption_window.destroy()
+        self.captionWindow.destroy()
 
         # Reload photos in the album
-        for widget in self.photos_frame.winfo_children():
+        for widget in self.photosFrame.winfoChildren():
             widget.destroy()
 
-        self.load_photos()
+        self.loadPhotos()
+        
 class FriendFeed:
     global userID
     def __init__(self, master):
@@ -578,15 +605,14 @@ class FriendFeed:
         self.title_label = tk.Label(master, text="Friend Feed", font=("Helvetica", 16))
         self.title_label.pack(pady=10)
 
-        self.scrollbar = tk.Scrollbar(master)
-        self.scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+        feedFrame, feedCanvas = self.createFeedFrame(master)
+        feedFrame.pack(side='left', fill='both', expand=True, padx=10, pady=10)
+        #scrollBar helper func
+        scrollbar = self.createScrollbar(feedFrame, feedCanvas)
+        scrollbar.pack(side='right', fill='y')
 
-        self.feed_listbox = tk.Listbox(master, yscrollcommand=self.scrollbar.set, width=80, height=20)
-        self.feed_listbox.pack(pady=10)
-
-        self.scrollbar.config(command=self.feed_listbox.yview)
-
-        self.load_friend_feed()
+        innerFeedFrame = self.createInnerFeedFrame(feedCanvas)
+        self.addRandomImages(innerFeedFrame)
 
         back_button = tk.Button(master, text="Back", command=self.back, bg='#f0f0f0', width=15)
         back_button.pack(pady=10)
@@ -596,16 +622,152 @@ class FriendFeed:
         self.newWindow = tk.Toplevel(self.master)
         self.app = HomePage(self.newWindow)
 
-    def load_friend_feed(self):
-        # Fetch recent photo uploads from friends
-        recent_uploads = dba.get_friend_feed(conn, userID)
+    #On click change
+    def updateScrollRegion(event):
+        feedCanvas.configure(scrollregion=feedCanvas.bbox("all")) 
+        innerFeedFrame.bind("<Configure>", updateScrollRegion) #bind is a cool function we binde configure so that on updateScrollRegion we change the innerframe contents
+        return innerFeedFrame
 
-        for upload in recent_uploads:
-            friend_name = upload[0]
-            photo_name = upload[1]
-            upload_time = upload[2]
+    #helper funciton sets up feed
+    def createFeedFrame(self, master):
+        feedFrame = ttk.Frame(master) #ttk is special library from tinkter with fun sub methods for building ui
+        feedCanvas = tk.Canvas(feedFrame, bg='white')
+        feedCanvas.pack(side='left', fill='both', expand=True)
+        return feedFrame, feedCanvas
+    #Create ScrolLBar
+    def createScrollbar(self, feedFrame, feedCanvas):
+        scrollbar = tk.Scrollbar(feedFrame, orient='vertical', command=feedCanvas.yview) #basic scrollbar setup orient vertical instead of horizontal
+        feedCanvas.configure(yscrollcommand=scrollbar.set)
+        feedCanvas.bind('<Configure>', lambda e: feedCanvas.configure(scrollregion=feedCanvas.bbox('all'))) #lambda means this is gonna run through all bbox in feedcanvas
+        return scrollbar
 
-            self.feed_listbox.insert(tk.END, f"{friend_name} uploaded '{photo_name}' on {upload_time}")
+    #within our feed we have an inner method that will hold the photos
+    def createInnerFeedFrame(self, feedCanvas):
+        innerFeedFrame = tk.Frame(feedCanvas, bg='white')
+        feedCanvas.create_window((0, 0), window=innerFeedFrame, anchor='nw')
+        return innerFeedFrame
+
+    #setup feed here by getting all the photos and randomly shufflying them
+    def configureFeed(self):
+        friend = dba.select_friends_by_user_id(conn, userID)
+        self.photoLocations = dba.select_photos_by_userid(conn, friend) #this is a cool call gets all photo info
+        random.shuffle(self.photoLocations)
+
+    #load photos from dba
+    def addRandomImages(self, innerFeedFrame):
+        self.photoLocations = dba.select_photos_by_userid(conn, friend) 
+        for photoInfo in self.photoLocations:
+            if photoInfo[userID] in friend:
+                print(photoInfo)
+                self.displayPhoto(innerFeedFrame, photoInfo) #iterate photos and siplay them
+
+    def displayPhoto(self, innerFeedFrame, photoInfo):
+        print(photoInfo)
+        photoId = photoInfo['upd']
+        photoPath = photoInfo['filepath']
+        caption = photoInfo['caption']
+        date = photoInfo['data']
+        #print(photoPath)
+        selectPhoto = dba.selectPhotoByUpd(conn, photoId)  #call photo upload feature
+
+        imageLabel = tk.Label(innerFeedFrame, bg='white', borderwidth=2, relief="groove")
+        imageLabel.image = self.loadImageFromPath(photoPath)
+        imageLabel.config(image=imageLabel.image)
+        imageLabel.pack(pady=10,anchor='center')
+       
+        likeButtonText = tk.StringVar()
+        likeButtonText.set("Like")
+        likeButton = tk.Button(innerFeedFrame, textvariable=likeButtonText, command=lambda: self.likePhoto(photoId, likeButtonText))
+        likeButton.pack()
+        # Add comment button and comment section
+        commentButton = tk.Button(innerFeedFrame, text="Comments", command=lambda: self.showCommentsPopup(photoId))
+        commentButton.pack()
+
+        # Add tags button and tag section
+        tagButton = tk.Button(innerFeedFrame, text="Tags", command=lambda: self.showTagsPopup(photoId))
+        tagButton.pack()
+
+        captionLabel = tk.Label(innerFeedFrame, text=caption, font=("Helvetica", 10, "bold"), bg='white', wraplength=200, justify='center')
+        captionLabel.pack()
+
+        dateLabel = tk.Label(innerFeedFrame, text=date, font=("Helvetica", 8), bg='white')
+        dateLabel.pack()
+
+    # Like photo method
+    def likePhoto(self, photoId,likeButtonText):
+         if likeButtonText.get() == "Like":
+            
+            dba.incrementLikeCount(conn, photoId)
+            likeButtonText.set("Unlike")
+         else:
+          
+            dba.decrementLikeCount(conn, photoId)
+            likeButtonText.set("Like")
+
+    # Show comments popup
+    def showCommentsPopup(self, photoId):
+        
+        comments = dba.selectCommentsByUpd(conn,photoId)
+        commentsPopup = tk.Toplevel()
+        commentsPopup.title("Comments")
+
+    # Create a Listbox to display the comments
+        commentsListbox = tk.Listbox(commentsPopup, width=50, height=10)
+        commentsListbox.pack()
+
+    # Display existing comments
+        if(len(comments) > 1):
+            for comment in comments:
+        # Add each comment to the Listbox
+                commentsListbox.insert(tk.END, comment)
+
+    # Add new comment entry and submit button
+        newCommentEntry = tk.Entry(commentsPopup)
+        newCommentEntry.pack()
+
+        submitCommentButton = tk.Button(commentsPopup, text="Submit Comment", command=lambda: self.submitComment(photoId, newCommentEntry.get()))
+        submitCommentButton.pack()
+
+    # Submit comment method
+    def submitComment(self, photoId, commentText):
+        x = random.randint(0,500000)
+        dba.insertComment(conn,x,commentText,userID,photoId,datetime.datetime.now().strftime("%Y-%m-%d"))
+        if hasattr(self, 'commentsPopup') and self.commentsPopup:
+            self.commentsPopup.destroy()
+        self.showCommentsPopup(photoId)
+
+    def showTagsPopup(self, photoId):
+        if hasattr(self, 'tagsPopup') and self.tagsPopup:
+            self.tagsPopup.destroy()
+        tagsPopup = tk.Toplevel()
+        tagsPopup.title("Tags")
+    
+        tagsListbox = tk.Listbox(tagsPopup, width=50, height=10)
+        tagsListbox.pack()
+
+        tags = dba.selectTagsByUpd(conn, photoId)
+        for tag in tags:
+            tagsListbox.insert(tk.END, tag)
+
+        newTagEntry = tk.Entry(tagsPopup)
+        newTagEntry.pack()
+
+        submitTagButton = tk.Button(tagsPopup, text="Submit Tag", command=lambda: self.submitTag(photoId, newTagEntry.get()))
+        submitTagButton.pack()
+
+    # Submit tag method
+    def submitTag(self, photoId, tagText):
+        dba.insertTag(conn,tagText,photoId)
+        self.showTagsPopup(photoId)
+        
+    def loadImageFromPath(self, filepath):
+        from PIL import Image, ImageTk
+
+        img = Image.open(filepath)
+        self.master.update()
+        img = img.resize((int(self.master.winfo_width() / 4), int(self.master.winfo_height() / 4)), Image.LANCZOS)
+        return ImageTk.PhotoImage(img)
+    
 class MyProfile:
     def __init__(self, master):
         self.master = master
@@ -614,174 +776,174 @@ class MyProfile:
         #Setup First Name Label
         flabel = tk.Label(master, text="First Name:")
         flabel.pack()
-        self.ftext_box = tk.Text(master, width=30,height=3)
-        self.ftext_box.pack()
+        self.ftextBox = tk.Text(master, width=30,height=3)
+        self.ftextBox.pack()
         #Setup Last Name Label
         llabel = tk.Label(master, text="Last Name:")
         llabel.pack()
-        self.ltext_box = tk.Text(master, width=30,height=3)
-        self.ltext_box.pack()
+        self.ltextBox = tk.Text(master, width=30,height=3)
+        self.ltextBox.pack()
         #Setup Email Label
         self.elabel = tk.Label(master, text="Email:")
         self.elabel.pack()
-        self.etext_box = tk.Text(master, width=30,height=3)
-        self.etext_box.pack()
+        self.etextBox = tk.Text(master, width=30,height=3)
+        self.etextBox.pack()
         #Setup Password Label
       
         self.passlabel = tk.Label(master, text="Password")
         self.passlabel.pack()
-        self.passtext_box = tk.Text(master, width=30,height=3)
-        self.passtext_box.pack()
+        self.passtextBox = tk.Text(master, width=30,height=3)
+        self.passtextBox.pack()
         #Set HomeTown Label
         self.htlabel = tk.Label(master, text="Hometown:")
         self.htlabel.pack()
-        self.httext_box = tk.Text(master, width=30,height=3)
-        self.httext_box.pack()
+        self.httextBox = tk.Text(master, width=30,height=3)
+        self.httextBox.pack()
         #Set Gender Options
         self.genlabel = tk.Label(master, text="Gender:")
         self.genlabel.pack()
         #Setup Gender Options
-        gender_options = ["Male", "Female", "Other"]
-        self.selected_gender = tk.StringVar()
-        self.selected_gender.set(gender_options[0])
-        self.gender_menu = tk.OptionMenu(master, self.selected_gender, *gender_options)
-        self.gender_menu.pack()  
+        genderOptions = ["Male", "Female", "Other"]
+        self.selectedGender = tk.StringVar()
+        self.selectedGender.set(genderOptions[0])
+        self.genderMenu = tk.OptionMenu(master, self.selectedGender, *genderOptions)
+        self.genderMenu.pack()  
         
        # self.doblabel = tk.Label(master, text="Date of Birth:")
         #self.doblabel.pack()
-        #self.dob_entry = DateEntry(master, width=15, background='darkblue',foreground='white', borderwidth=2)
-        #self.dob_entry.pack(padx=10, pady=10)
+        #self.dobEntry = DateEntry(master, width=15, background='darkblue',foreground='white', borderwidth=2)
+        #self.dobEntry.pack(padx=10, pady=10)
         
-        self.button = tk.Button(master, text="Update Changes", command=self.get_input)
+        self.button = tk.Button(master, text="Update Changes", command=self.getInput)
         self.button.pack(pady=5)
         
         self.button = tk.Button(master, text="Back to Home", command=self.back)
         self.button.pack(pady=5)
-    #  print(httext_box)
+    #  print(httextBox)
      
     def back(self):
         self.master.withdraw()  
         self.newWindow = tk.Toplevel(self.master)  
         self.app = WelcomeWindow(self.newWindow) 
         
-    def switch_window(self):
+    def switchWindow(self):
         self.master.withdraw() 
         self.newWindow = tk.Toplevel(self.master) 
         self.app = HomePage(self.newWindow)
     #Main Driver Function
-    def get_input(self):
+    def getInput(self):
         #Get TextBox INputs
-        fname = self.ftext_box.get(1.0, 'end-1c')
-        lname = self.ltext_box.get(1.0, 'end-1c')
-        email = self.etext_box.get(1.0, 'end-1c')
-        hometown = self.httext_box.get(1.0, 'end-1c')
-        gender = self.selected_gender.get()
-        #dob = self.dob_entry.get_date()
-        password = self.passtext_box.get(1.0,'end-1c') 
-      #  album_num = 0
+        fname = self.ftextBox.get(1.0, 'end-1c')
+        lname = self.ltextBox.get(1.0, 'end-1c')
+        email = self.etextBox.get(1.0, 'end-1c')
+        hometown = self.httextBox.get(1.0, 'end-1c')
+        gender = self.selectedGender.get()
+        #dob = self.dobEntry.getDate()
+        password = self.passtextBox.get(1.0,'end-1c') 
+      #  albumNum = 0
         try:
-            conn = dba.create_conn() #Various If Statements Loop Through DBA Update Calls
+            conn = dba.createConn() #Various If Statements Loop Through DBA Update Calls
             if(fname != ""):
-                dba.update_user_fname(conn,userID,fname)
+                dba.updateUserFname(conn,userID,fname)
             if(lname != ""):
-                dba.update_user_lname(conn,userID,lname)
+                dba.updateUserLname(conn,userID,lname)
             if(email != ""):
-                dba.update_user_email(conn,userID,email)
+                dba.updateUserEmail(conn,userID,email)
             if(hometown != ""):
-                dba.update_user_hometown(conn,userID,hometown)
+                dba.updateUserHometown(conn,userID,hometown)
             if(gender != ""):
-                dba.update_user_gender(conn,userID,gender)
+                dba.updateUserGender(conn,userID,gender)
             if(password!= ""):
-                dba.update_user_password(conn,userID,password)
+                dba.updateUserPassword(conn,userID,password)
                 
         except():
             print("Invalid Entry Try Again")
         
-        self.switch_window()
+        self.switchWindow()
 class Friends:
     def __init__(self, master):
         self.master = master
         master.geometry("800x1200")
         master.title("Friends")
         #Setup Friend Search
-        search_label = tk.Label(master, text="Search Friends by User ID:", font=("Helvetica", 14))
-        search_label.pack(pady=10)
+        searchLabel = tk.Label(master, text="Search Friends by User ID:", font=("Helvetica", 14))
+        searchLabel.pack(pady=10)
 
-        self.search_entry = tk.Entry(master)
-        self.search_entry.pack()
+        self.searchEntry = tk.Entry(master)
+        self.searchEntry.pack()
 
-        search_button = tk.Button(master, text="Search", command=self.search_users, bg='#f0f0f0', width=15)
-        search_button.pack(pady=10)
+        searchButton = tk.Button(master, text="Search", command=self.searchUsers, bg='#f0f0f0', width=15)
+        searchButton.pack(pady=10)
 
-        self.search_results_listbox = tk.Listbox(master, width=50, height=5)
-        self.search_results_listbox.pack(pady=10)
+        self.searchResultsListbox = tk.Listbox(master, width=50, height=5)
+        self.searchResultsListbox.pack(pady=10)
         #Setup Friend Box
-        self.friends_listbox = tk.Listbox(master, width=50, height=15)
-        self.friends_listbox.pack(pady=10)
+        self.friendsListbox = tk.Listbox(master, width=50, height=15)
+        self.friendsListbox.pack(pady=10)
         #Call update list on every recall
-        self.update_friends_list()
+        self.updateFriendsList()
         #Setup add friend button
-        add_friend_button = tk.Button(master, text="Add Friend", command=self.add_friend, bg='#f0f0f0', width=15)
-        add_friend_button.pack(side='left', padx=10)
+        addFriendButton = tk.Button(master, text="Add Friend", command=self.addFriend, bg='#f0f0f0', width=15)
+        addFriendButton.pack(side='left', padx=10)
         #setup remove friend button
-        remove_friend_button = tk.Button(master, text="Remove Friend", command=self.remove_friend, bg='#f0f0f0', width=15)
-        remove_friend_button.pack(side='right', padx=10)
+        removeFriendButton = tk.Button(master, text="Remove Friend", command=self.removeFriend, bg='#f0f0f0', width=15)
+        removeFriendButton.pack(side='right', padx=10)
         #back button
-        back_button = tk.Button(master, text="Back", command=self.back, bg='#f0f0f0', width=15)
-        back_button.pack(pady=10)
+        backButton = tk.Button(master, text="Back", command=self.back, bg='#f0f0f0', width=15)
+        backButton.pack(pady=10)
 
     def back(self):
         self.master.withdraw()
         self.newWindow = tk.Toplevel(self.master)
         self.app = HomePage(self.newWindow)
     #Setup simple search
-    def search_users(self):
-        search_query = self.search_entry.get()
-        if search_query:
+    def searchUsers(self):
+        searchQuery = self.searchEntry.get()
+        if searchQuery:
             try:
-                user_id = int(search_query) #Get typesafe user id
-                search_results = dba.select_user_by_id(conn, user_id) #call dba connection
-                if search_results:
-                    self.update_search_results_list(search_results) #append to listbox
+                userId = int(searchQuery) #Get typesafe user id
+                searchResults = dba.selectUserById(conn, userId) #call dba connection
+                if searchResults:
+                    self.updateSearchResultsList(searchResults) #append to listbox
                 else:
-                    self.search_results_listbox.delete(0, tk.END) #return nothing
+                    self.searchResultsListbox.delete(0, tk.END) #return nothing
                     messagebox.showerror("Error", "No user found with this User ID")
             except ValueError:
                 messagebox.showerror("Error", "Please enter a valid User ID")
-    def update_search_results_list(self, user):
-        self.search_results_listbox.delete(0, tk.END)
-        self.search_results_listbox.insert(tk.END, f"{user[1]} {user[2]} ({user[3]})") #add user info
+    def updateSearchResultsList(self, user):
+        self.searchResultsListbox.delete(0, tk.END)
+        self.searchResultsListbox.insert(tk.END, f"{user[1]} {user[2]} ({user[3]})") #add user info
 
-    def update_friends_list(self, friends=None):
-        self.friends_listbox.delete(0, tk.END)
+    def updateFriendsList(self, friends=None):
+        self.friendsListbox.delete(0, tk.END)
         if friends is None:
-            friends = dba.select_friends_by_user_id(conn, userID) #call freinds by user id dba call
+            friends = dba.selectFriendsByUserId(conn, userID) #call freinds by user id dba call
 
         for friend in friends:
-            self.friends_listbox.insert(tk.END, f"{friend[1]}") #add friend id to friends list
+            self.friendsListbox.insert(tk.END, f"{friend[1]}") #add friend id to friends list
 
-    def add_friend(self):
-        selected_index = self.search_results_listbox.curselection() #get the currently selected query
-        if selected_index:
-            friend_email = self.search_results_listbox.get(selected_index).split('(')[-1].split(')')[0] #parse for there email
-            friend = dba.select_user_by_email(conn, friend_email) #store email
+    def addFriend(self):
+        selectedIndex = self.searchResultsListbox.curselection() #get the currently selected query
+        if selectedIndex:
+            friendEmail = self.searchResultsListbox.get(selectedIndex).split('(')[-1].split(')')[0] #parse for there email
+            friend = dba.selectUserByEmail(conn, friendEmail) #store email
             if friend:
                 friend = friend[0] #get friend id which is stroed in column 0 in users
-                dba.insert_friend(conn, userID, friend[0], datetime.datetime.now())
+                dba.insertFriend(conn, userID, friend[0], datetime.datetime.now())
                 messagebox.showinfo("Success", f"Added {friend[1]} {friend[2]} as a friend") #sucsess
-                self.update_friends_list()
+                self.updateFriendsList()
             else:
                 messagebox.showerror("Error", "Unable to find the selected user")
 
-    def remove_friend(self):
-        selected_index = self.friends_listbox.curselection() #get current query
-        if selected_index:
-            friend_id = self.friends_listbox.get(selected_index).split('(')[-1].split(')')[0] #parse for friend id
-            friend = dba.select_user_by_id(conn,friend_id) #now pass friend id back
+    def removeFriend(self):
+        selectedIndex = self.friendsListbox.curselection() #get current query
+        if selectedIndex:
+            friendId = self.friendsListbox.get(selectedIndex).split('(')[-1].split(')')[0] #parse for friend id
+            friend = dba.selectUserById(conn,friendId) #now pass friend id back
             if friend:
-                dba.delete_friend(conn, userID, friend[0]) #if valid friend now we delete them
+                dba.deleteFriend(conn, userID, friend[0]) #if valid friend now we delete them
                 messagebox.showinfo("Success", f"Removed {friend[1]} {friend[2]} as a friend") #sucsess
-                self.update_friends_list() #refresh
+                self.updateFriendsList() #refresh
             else:
                 messagebox.showerror("Error", "Unable to find the selected user")
                    
@@ -790,14 +952,14 @@ class UploadPhoto:
     def __init__(self, master):
         self.master = master
         #Set up FileName Label
-        self.filename_label = tk.Label(master, text="No file selected", font=("Helvetica", 14))
-        self.filename_label.pack(pady=20)
+        self.filenameLabel = tk.Label(master, text="No file selected", font=("Helvetica", 14))
+        self.filenameLabel.pack(pady=20)
         #Setup Caption Label
-        self.caption_entry_label = tk.Label(master, text="Caption:", font=("Helvetica", 14))
-        self.caption_entry_label.pack(pady=10)
+        self.captionEntryLabel = tk.Label(master, text="Caption:", font=("Helvetica", 14))
+        self.captionEntryLabel.pack(pady=10)
         #Get Caption as Entry
-        self.caption_entry = tk.Entry(master)
-        self.caption_entry.pack()
+        self.captionEntry = tk.Entry(master)
+        self.captionEntry.pack()
 
         master.geometry("500x500")
         master.title("Upload Photo")
@@ -805,53 +967,136 @@ class UploadPhoto:
         self.button = tk.Button(master, text="Back", command=self.back, bg='#f0f0f0', width=15)
         self.button.pack(pady=10)
         #Upload Button
-        self.upload_button = tk.Button(master, text="Select photo", command=self.select_file, bg='#f0f0f0', width=15)
-        self.upload_button.pack(pady=10)
+        self.uploadButton = tk.Button(master, text="Select photo", command=self.selectFile, bg='#f0f0f0', width=15)
+        self.uploadButton.pack(pady=10)
         #Save Button
-        self.save_button = tk.Button(master, text="Save", command=self.upload_photo, bg='#f0f0f0', width=15)
-        self.save_button.pack(pady=10)
+        self.saveButton = tk.Button(master, text="Save", command=self.uploadPhoto, bg='#f0f0f0', width=15)
+        self.saveButton.pack(pady=10)
 
     def back(self):
         self.master.withdraw()
         self.newWindow = tk.Toplevel(self.master)
         self.app = HomePage(self.newWindow)
     #Accept jpeg and png and as catch all we can acccept whatever uploads but it mihgt not be valid
-    def select_file(self):
+    def selectFile(self):
         filetypes = (("JPEG files", "*.jpg"), ("PNG files", "*.png"), ("All files", "*.*"))
         filepath = filedialog.askopenfilename(filetypes=filetypes)
         if filepath:
-            self.filename_label.config(text=filepath) #Setup filename from filepath from os
+            self.filenameLabel.config(text=filepath) #Setup filename from filepath from os
     
-    def upload_photo(self):
-        filename = self.filename_label.cget("text")
-        caption = self.caption_entry.get()
+    def uploadPhoto(self):
+        filename = self.filenameLabel.cget("text")
+        caption = self.captionEntry.get()
         if filename == "No file selected":
             messagebox.showerror("Error", "No photo selected")
         elif not caption:
             messagebox.showerror("Error", "Caption cannot be empty")
         else:
-            unique_id = random.randint(14300,28770) #Randomly generate uuid
-            current_date = datetime.datetime.now().strftime("%Y-%m-%d") #Get current date
-            photo_locations.append({'id': unique_id, 'path': filename, 'caption': caption, 'date': current_date}) #Add photo to photo locations array
-            dba.insert_photo(conn, unique_id, userID, caption, current_date, filename)  #Insert Symlink in Databse
+            uniqueId = random.randint(14300,28770) #Randomly generate uuid
+            currentDate = datetime.datetime.now().strftime("%Y-%m-%d") #Get current date
+            photoLocations.append({'id': uniqueId, 'path': filename, 'caption': caption, 'date': currentDate}) #Add photo to photo locations array
+            dba.insertPhoto(conn, uniqueId, userID, caption, currentDate, filename)  #Insert Symlink in Databse
             messagebox.showinfo("Success", f"Photo uploaded\nFilepath: {filename}")
-class TrendingTags:
-    def __init__(self):
+            
+
+from PIL import Image, ImageTk
+class Search:
+    def __init__(self, master):
         self.master = master
         master.geometry("500x500")
-        master.title("Trending Tags")
+        master.title("Search")
+        #Setup Buttons
+        self.backButton = tk.Button(master, text="Back", command=self.back)
+        self.backButton.pack(pady=10)
+         #Set up Search Input
+        self.search_var = tk.StringVar()
+        self.searchEntry = tk.Entry(master, textvariable=self.search_var)
+        self.searchEntry.pack(pady=10)
+        #Setup Display Input
+        self.searchCategoriesLabel = tk.Label(master, text="Select search categories:")
+        self.searchCategoriesLabel.pack(pady=10)
 
-        self.back_button = tk.Button(master, text="Back", command=self.back)
+        self.searchCategoriesListbox = tk.Listbox(master, selectmode=tk.MULTIPLE)
+        self.searchCategoriesListbox.pack(pady=10)
+        searchCategories = ["Tag", "Comment", "UserID", "Date"]
+        for category in searchCategories: 
+            self.searchCategoriesListbox.insert(tk.END, category) #Display all categories 
 
-        tags = dba.get_top_tags(search_query) #Get comments by date
-        self.display_results("Top Tags", tags)
+        self.searchButton = tk.Button(master, text="Search", command=self.search)
+        self.searchButton.pack(pady=10)
 
     def back(self):
         self.master.withdraw()
         self.newWindow = tk.Toplevel(self.master)
         self.app = HomePage(self.newWindow)
-    
-    
+     #Searh Function
+    def search(self):
+        searchQuery = self.search_var.get()
+        selectedIndices = self.searchCategoriesListbox.curselection()
+        selectedCategories = [self.searchCategoriesListbox.get(i) for i in selectedIndices] #Collect all selected driver categories
+
+        if not selectedCategories:
+            messagebox.showerror("Error", "Please select at least one search category.")
+            return
+
+        for category in selectedCategories:
+            if category == "Tag": #Tag Category
+                photos = dba.searchPhotosByTags(conn, searchQuery) #Search for photos with this tag
+                self.displayResults("Photos", photos, displayPhoto=True) # Display The Photo with This Tag
+
+            elif category == "Comment":
+                comments = dba.searchCommentsByText(conn, searchQuery) #Get all comments related with this text
+                self.displayResults("Comments", comments) #Display comments
+
+            elif category == "UserID":
+                user = dba.selectUserById(conn, searchQuery) #Get user info
+                if user:
+                    self.displayResults("User", [user])
+                    photos = dba.selectPhotosByUserId(conn, searchQuery) #Display User Photos
+                    self.displayResults("User Photos", photos, displayPhoto=True)
+                    comments = dba.selectCommentsByUserId(conn, searchQuery) #Display User Comments
+                    self.displayResults("User Comments", comments) 
+                else:
+                    messagebox.showerror("Error", "No user found with the specified user ID.")
+
+            elif category == "Date":
+                comments = dba.selectCommentsByDate(conn, searchQuery) #Get comments by date
+                self.displayResults("Comments", comments)
+                photos = dba.selectPhotosByDate(conn, searchQuery) #Get Photos by Date
+                self.displayResults("Photos", photos, displayPhoto=True)
+
+    def displayResults(self, title, results, displayPhoto=False):
+        resultsWindow = tk.Toplevel()
+        resultsWindow.title(title)
+        #Check to make sure Results is valid
+        if results is not None and len(results) > 0:
+            for result in results:
+                if displayPhoto: #Get photo information to pass back
+                    photoId = result['id']
+                    photoPath = result['path']
+                    caption = result['caption']
+                    date = result['date']
+
+                    self.displayPhoto(resultsWindow, photoId, photoPath, caption, date)
+                else:
+                    resultLabel = tk.Label(resultsWindow, text=str(result), wraplength=400)
+                    resultLabel.pack()
+        else:
+            noResultsLabel = tk.Label(resultsWindow, text="No results found.")
+            noResultsLabel.pack()
+            
+    def displayPhoto(self, photo):
+        try:
+            #Try opening an image
+            image = Image.open(photo[4])  #file path is at index 4
+            image.thumbnail((200, 200))
+            tkImage = ImageTk.PhotoImage(image)
+            #Create Photo Labels
+            photoLabel = tk.Label(self.master, image=tkImage)
+            photoLabel.image = tkImage
+            photoLabel.pack(pady=10)
+        except Exception as e:
+            print(f"Error loading image: {photo}. Error: {e}")
 class RecomendedFriends():
     def __init__(self):
         self.master = master
@@ -887,106 +1132,21 @@ class ContributionScore:
         self.newWindow = tk.Toplevel(self.master)
         self.app = HomePage(self.newWindow)
         
-        
-        
-class Search:
-    def __init__(self, master):
+class TrendingTags:
+    def __init__(self,master):
         self.master = master
         master.geometry("500x500")
-        master.title("Search")
-        #Setup Buttons
-        self.back_button = tk.Button(master, text="Back", command=self.back)
-        self.back_button.pack(pady=10)
-         #Set up Search Input
-        self.search_var = tk.StringVar()
-        self.search_entry = tk.Entry(master, textvariable=self.search_var)
-        self.search_entry.pack(pady=10)
-        #Setup Display Input
-        self.search_categories_label = tk.Label(master, text="Select search categories:")
-        self.search_categories_label.pack(pady=10)
+        master.title("Trending Tags")
 
-        self.search_categories_listbox = tk.Listbox(master, selectmode=tk.MULTIPLE)
-        self.search_categories_listbox.pack(pady=10)
-        search_categories = ["Tag", "Comment", "UserID", "Date"]
-        for category in search_categories: 
-            self.search_categories_listbox.insert(tk.END, category) #Display all categories 
+        self.backButton = tk.Button(master, text="Back", command=self.back)
 
-        self.search_button = tk.Button(master, text="Search", command=self.search)
-        self.search_button.pack(pady=10)
+        tags = dba.getTopTags(searchQuery) #Get comments by date
+        self.displayResults("Top Tags", tags)
 
     def back(self):
         self.master.withdraw()
         self.newWindow = tk.Toplevel(self.master)
         self.app = HomePage(self.newWindow)
-     #Searh Function
-    def search(self):
-        search_query = self.search_var.get()
-        selected_indices = self.search_categories_listbox.curselection()
-        selected_categories = [self.search_categories_listbox.get(i) for i in selected_indices] #Collect all selected driver categories
-
-        if not selected_categories:
-            messagebox.showerror("Error", "Please select at least one search category.")
-            return
-
-        for category in selected_categories:
-            if category == "Tag": #Tag Category
-                photos = dba.search_photos_by_tags(conn, search_query) #Search for photos with this tag
-                self.display_results("Photos", photos, display_photo=True) # Display The Photo with This Tag
-
-            elif category == "Comment":
-                comments = dba.search_comments_by_text(conn, search_query) #Get all comments related with this text
-                self.display_results("Comments", comments) #Display comments
-
-            elif category == "UserID":
-                user = dba.select_user_by_id(conn, search_query) #Get user info
-                if user:
-                    self.display_results("User", [user])
-                    photos = dba.select_photos_by_user_id(conn, search_query) #Display User Photos
-                    self.display_results("User Photos", photos, display_photo=True)
-                    comments = dba.select_comments_by_user_id(conn, search_query) #Display User Comments
-                    self.display_results("User Comments", comments) 
-                else:
-                    messagebox.showerror("Error", "No user found with the specified user ID.")
-
-            elif category == "Date":
-                comments = dba.select_comments_by_date(conn, search_query) #Get comments by date
-                self.display_results("Comments", comments)
-                photos = dba.select_photos_by_date(conn, search_query) #Get Photos by Date
-                self.display_results("Photos", photos, display_photo=True)
-
-    def display_results(self, title, results, display_photo=False):
-        results_window = tk.Toplevel()
-        results_window.title(title)
-        #Check to make sure Results is valid
-        if results is not None and len(results) > 0:
-            for result in results:
-                if display_photo: #Get photo information to pass back
-                    photo_id = result['id']
-                    photo_path = result['path']
-                    caption = result['caption']
-                    date = result['date']
-
-                    self.display_photo(results_window, photo_id, photo_path, caption, date)
-                else:
-                    result_label = tk.Label(results_window, text=str(result), wraplength=400)
-                    result_label.pack()
-        else:
-            no_results_label = tk.Label(results_window, text="No results found.")
-            no_results_label.pack()
-            
-    def display_photo(self, photo):
-        try:
-            #Try opening an image
-            image = Image.open(photo[4])  #file path is at index 4
-            image.thumbnail((200, 200))
-            tk_image = ImageTk.PhotoImage(image)
-            #Create Photo Labels
-            photo_label = tk.Label(self.master, image=tk_image)
-            photo_label.image = tk_image
-            photo_label.pack(pady=10)
-        except Exception as e:
-            print(f"Error loading image: {photo}. Error: {e}")
-    
 
 root = tk.Tk()
 app = WelcomeWindow(root)
