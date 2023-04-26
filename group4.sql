@@ -204,23 +204,24 @@ CREATE TABLE public.users (
     gender character varying,
     password character varying,
     albumnum integer
+    contribution_score integer
 );
 
-INSERT INTO public.users (userid, fname, lname, email, dob, hometown, gender, password, albumnum) VALUES (301, 'Aiden', 'Smith', 'aiden.smith@asu.edu', '1999-03-14', 'Phoenix', 'M', 'password1', 2);
-INSERT INTO public.users (userid, fname, lname, email, dob, hometown, gender, password, albumnum) VALUES (302, 'Brianna', 'Johnson', 'brianna.johnson@asu.edu', '2000-06-22', 'Tucson', 'F', 'password2', 3);
-INSERT INTO public.users (userid, fname, lname, email, dob, hometown, gender, password, albumnum) VALUES (303, 'Caleb', 'Williams', 'caleb.williams@asu.edu', '1998-12-30', 'Mesa', 'M', 'password3', 5);
-INSERT INTO public.users (userid, fname, lname, email, dob, hometown, gender, password, albumnum) VALUES (304, 'Danielle', 'Brown', 'danielle.brown@asu.edu', '1999-11-18', 'Glendale', 'F', 'password4', 1);
-INSERT INTO public.users (userid, fname, lname, email, dob, hometown, gender, password, albumnum) VALUES (305, 'Ethan', 'Jones', 'ethan.jones@asu.edu', '1998-08-05', 'Scottsdale', 'M', 'password5', 4);
-INSERT INTO public.users (userid, fname, lname, email, dob, hometown, gender, password, albumnum) VALUES (306, 'Fiona', 'Garcia', 'fiona.garcia@asu.edu', '2000-04-27', 'Chandler', 'F', 'password6', 3);
-INSERT INTO public.users (userid, fname, lname, email, dob, hometown, gender, password, albumnum) VALUES (307, 'Gavin', 'Miller', 'gavin.miller@asu.edu', '1999-02-12', 'Gilbert', 'M', 'password7', 2);
-INSERT INTO public.users (userid, fname, lname, email, dob, hometown, gender, password, albumnum) VALUES (308, 'Hailey', 'Wilson', 'hailey.wilson@asu.edu', '1998-07-08', 'Tempe', 'F', 'password8', 1);
-INSERT INTO public.users (userid, fname, lname, email, dob, hometown, gender, password, albumnum) VALUES (309, 'Isaac', 'Moore', 'isaac.moore@asu.edu', '2000-05-19', 'Peoria', 'M', 'password9', 4);
-INSERT INTO public.users (userid, fname, lname, email, dob, hometown, gender, password, albumnum) VALUES (310, 'Jasmine', 'Taylor', 'jasmine.taylor@asu.edu', '1999-10-25', 'Yuma', 'F', 'password10', 3);
-INSERT INTO public.users (userid, fname, lname, email, dob, hometown, gender, password, albumnum) VALUES (311, 'Jay', 'Bloc', 'jbloc@asu.edu', '1998-09-30', 'Flagstaff', 'M', 'password11', 2)
-INSERT INTO public.users (userid, fname, lname, email, dob, hometown, gender, password, albumnum) VALUES (312, 'Kodak', 'Black', 'kblack@asu.edu', '1999-10-30', 'Oro Heights', 'M', 'password12', 2)
-INSERT INTO public.users (userid, fname, lname, email, dob, hometown, gender, password, albumnum) VALUES (313, 'Young', 'Thug', 'ythug@asu.edu', '1997-03-20', 'LA', 'M', 'password13', 2)
-INSERT INTO public.users (userid, fname, lname, email, dob, hometown, gender, password, albumnum) VALUES (314, 'Quavo', 'Migos', 'quavo@asu.edu', '1999-04-10', 'San Dimas', 'M', 'password14', 2)
-INSERT INTO public.users (userid, fname, lname, email, dob, hometown, gender, password, albumnum) VALUES (315, 'SHOW', 'GALANTIS', 'galantis@asu.edu', '1991-01-10', 'The Valley', 'M', 'password15', 2)
+INSERT INTO public.users (userid, fname, lname, email, dob, hometown, gender, password, albumnum) VALUES (301, 'Aiden', 'Smith', 'aiden.smith@asu.edu', '1999-03-14', 'Phoenix', 'M', 'password1', 2,0);
+INSERT INTO public.users (userid, fname, lname, email, dob, hometown, gender, password, albumnum) VALUES (302, 'Brianna', 'Johnson', 'brianna.johnson@asu.edu', '2000-06-22', 'Tucson', 'F', 'password2', 3,10);
+INSERT INTO public.users (userid, fname, lname, email, dob, hometown, gender, password, albumnum) VALUES (303, 'Caleb', 'Williams', 'caleb.williams@asu.edu', '1998-12-30', 'Mesa', 'M', 'password3', 5,11);
+INSERT INTO public.users (userid, fname, lname, email, dob, hometown, gender, password, albumnum) VALUES (304, 'Danielle', 'Brown', 'danielle.brown@asu.edu', '1999-11-18', 'Glendale', 'F', 'password4', 1,12);
+INSERT INTO public.users (userid, fname, lname, email, dob, hometown, gender, password, albumnum) VALUES (305, 'Ethan', 'Jones', 'ethan.jones@asu.edu', '1998-08-05', 'Scottsdale', 'M', 'password5', 4,13);
+INSERT INTO public.users (userid, fname, lname, email, dob, hometown, gender, password, albumnum) VALUES (306, 'Fiona', 'Garcia', 'fiona.garcia@asu.edu', '2000-04-27', 'Chandler', 'F', 'password6', 3,14);
+INSERT INTO public.users (userid, fname, lname, email, dob, hometown, gender, password, albumnum) VALUES (307, 'Gavin', 'Miller', 'gavin.miller@asu.edu', '1999-02-12', 'Gilbert', 'M', 'password7', 2,15);
+INSERT INTO public.users (userid, fname, lname, email, dob, hometown, gender, password, albumnum) VALUES (308, 'Hailey', 'Wilson', 'hailey.wilson@asu.edu', '1998-07-08', 'Tempe', 'F', 'password8', 1,27);
+INSERT INTO public.users (userid, fname, lname, email, dob, hometown, gender, password, albumnum) VALUES (309, 'Isaac', 'Moore', 'isaac.moore@asu.edu', '2000-05-19', 'Peoria', 'M', 'password9', 4,18);
+INSERT INTO public.users (userid, fname, lname, email, dob, hometown, gender, password, albumnum) VALUES (310, 'Jasmine', 'Taylor', 'jasmine.taylor@asu.edu', '1999-10-25', 'Yuma', 'F', 'password10', 3,19);
+INSERT INTO public.users (userid, fname, lname, email, dob, hometown, gender, password, albumnum) VALUES (311, 'Jay', 'Bloc', 'jbloc@asu.edu', '1998-09-30', 'Flagstaff', 'M', 'password11', 2,22)
+INSERT INTO public.users (userid, fname, lname, email, dob, hometown, gender, password, albumnum) VALUES (312, 'Kodak', 'Black', 'kblack@asu.edu', '1999-10-30', 'Oro Heights', 'M', 'password12', 2,33)
+INSERT INTO public.users (userid, fname, lname, email, dob, hometown, gender, password, albumnum) VALUES (313, 'Young', 'Thug', 'ythug@asu.edu', '1997-03-20', 'LA', 'M', 'password13', 2,4)
+INSERT INTO public.users (userid, fname, lname, email, dob, hometown, gender, password, albumnum) VALUES (314, 'Quavo', 'Migos', 'quavo@asu.edu', '1999-04-10', 'San Dimas', 'M', 'password14', 2,5)
+INSERT INTO public.users (userid, fname, lname, email, dob, hometown, gender, password, albumnum) VALUES (315, 'SHOW', 'GALANTIS', 'galantis@asu.edu', '1991-01-10', 'The Valley', 'M', 'password15', 2,6)
 ALTER TABLE public.users OWNER TO "rootUser";
 
 --
