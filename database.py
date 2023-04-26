@@ -1,6 +1,6 @@
 import psycopg2
 #Setup connection
-def create_conn():
+def createConn():
 	connection = psycopg2.connect(
         dbname="group45",
         user="rootUser",
@@ -10,7 +10,7 @@ def create_conn():
     )	
 	return connection
 
-def create_tables(conn):
+def createTables(conn):
     commands = ( #basic sql tables
         """
         CREATE TABLE Users ( 
@@ -77,7 +77,7 @@ def create_tables(conn):
         )
         """
     )
-    #unix_socket = '/cloudsql/{}'.format("coherent-answer-384517:us-central1:group45")
+    #unixSocket = '/cloudsql/{}'.format("coherent-answer-384517:us-central1:group45")
                 #Ignore failed attempt to use google cloud :(
 
     try:
@@ -91,39 +91,39 @@ def create_tables(conn):
         if conn is not None:
             conn.close()
 #Rest of Functions follow similar format sql insert/select/etc then conn.cursor() navigates to it.
-def insert_user(user_id, fname, lname, email, dob, hometown, gender, password, album_num,conn):
+def insertUser(userId, fname, lname, email, dob, hometown, gender, password, albumNum,conn):
     sql = """
     INSERT INTO Users (userID, fname, lname, email, dob, hometown, gender, password, albumNum)
     VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
     """
     try:
         cur = conn.cursor()
-        cur.execute(sql, (user_id, fname, lname, email, dob, hometown, gender, password, album_num))
+        cur.execute(sql, (userId, fname, lname, email, dob, hometown, gender, password, albumNum))
         conn.commit()
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
     finally:
         if conn is not None:
             conn.close()
-def select_user_by_id(conn, user_id):
+def selectUserById(conn, userId):
     sql = "SELECT * FROM Users WHERE userID = %s"
     try:
         cur = conn.cursor()
-        cur.execute(sql, (user_id,))
+        cur.execute(sql, (userId,))
         result = cur.fetchone()
         return result
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
-def select_user_by_id_and_password(conn, user_id, password):
+def selectUserByIdAndPassword(conn, userId, password):
     sql = "SELECT * FROM Users WHERE userID = %s AND password = %s"
     try:
         cur = conn.cursor()
-        cur.execute(sql, (user_id, password))
+        cur.execute(sql, (userId, password))
         result = cur.fetchone()
         return result
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)     
-def search_users_by_name(conn, name):
+def searchUsersByName(conn, name):
     sql = """
     SELECT * FROM Users
     WHERE fname ILIKE %s OR lname ILIKE %s
@@ -138,86 +138,86 @@ def search_users_by_name(conn, name):
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
 
-def update_user_albumcount(conn, user_id, new_album_num):
-    sql = "UPDATE Users SET album_num = %s WHERE userID = %s"
+def updateUserAlbumcount(conn, userId, newAlbumNum):
+    sql = "UPDATE Users SET albumNum = %s WHERE userID = %s"
     try:
         cur = conn.cursor()
-        cur.execute(sql, (new_album_num, user_id))
+        cur.execute(sql, (newAlbumNum, userId))
         conn.commit()
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
 
-def update_user_password(conn, user_id, new_password):
+def updateUserPassword(conn, userId, newPassword):
     sql = "UPDATE Users SET password = %s WHERE userID = %s"
     try:
         cur = conn.cursor()
-        cur.execute(sql, (new_password, user_id))
+        cur.execute(sql, (newPassword, userId))
         conn.commit()
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
 
-def update_user_gender(conn, user_id, new_gender):
+def updateUserGender(conn, userId, newGender):
     sql = "UPDATE Users SET gender = %s WHERE userID = %s"
     try:
         cur = conn.cursor()
-        cur.execute(sql, (new_gender, user_id))
+        cur.execute(sql, (newGender, userId))
         conn.commit()
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
 
-def update_user_hometown(conn, user_id, new_hometown):
+def updateUserHometown(conn, userId, newHometown):
     sql = "UPDATE Users SET hometown = %s WHERE userID = %s"
     try:
         cur = conn.cursor()
-        cur.execute(sql, (new_hometown, user_id))
+        cur.execute(sql, (newHometown, userId))
         conn.commit()
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
 
-def update_user_dob(conn, user_id, new_dob):
+def updateUserDob(conn, userId, newDob):
     sql = "UPDATE Users SET dob = %s WHERE userID = %s"
     try:
         cur = conn.cursor()
-        cur.execute(sql, (new_dob, user_id))
+        cur.execute(sql, (newDob, userId))
         conn.commit()
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
 
-def update_user_email(conn, user_id, new_email):
+def updateUserEmail(conn, userId, newEmail):
     sql = "UPDATE Users SET email = %s WHERE userID = %s"
     try:
         cur = conn.cursor()
-        cur.execute(sql, (new_email, user_id))
+        cur.execute(sql, (newEmail, userId))
         conn.commit()
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
 
-def update_user_fname(conn, user_id, new_fname):
+def updateUserFname(conn, userId, newFname):
     sql = "UPDATE Users SET fname = %s WHERE userID = %s"
     try:
         cur = conn.cursor()
-        cur.execute(sql, (new_fname, user_id))
+        cur.execute(sql, (newFname, userId))
         conn.commit()
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
-def update_user_lname(conn, user_id, new_lname):
+def updateUserLname(conn, userId, newLname):
     sql = "UPDATE Users SET lname = %s WHERE userID = %s"
     try:
         cur = conn.cursor()
-        cur.execute(sql, (new_lname, user_id))
+        cur.execute(sql, (newLname, userId))
         conn.commit()
     except (Exception, psycopg2.DatabaseError) as error:
-        print(error)
+            print(error)
 
-def delete_user(conn, user_id):
+def deleteUser(conn, userId):
     sql = "DELETE FROM Users WHERE userID = %s"
     try:
         cur = conn.cursor()
-        cur.execute(sql, (user_id,))
+        cur.execute(sql, (userId,))
         conn.commit()
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
-def insert_friend(conn, user_id, friend_id, friendship_date):
+def insertFriend(conn, userId, friendId, friendshipDate):
     sql = """
     INSERT INTO Friends (userID, friend, friendshipDate)
     VALUES (%s, %s, %s)
@@ -225,29 +225,29 @@ def insert_friend(conn, user_id, friend_id, friendship_date):
 
     try:
         cur = conn.cursor()
-        cur.execute(sql, (user_id, friend_id, friendship_date))
+        cur.execute(sql, (userId, friendId, friendshipDate))
         conn.commit()
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
-def select_friends_by_user_id(conn, user_id):
+def selectFriendsByUserId(conn, userId):
     sql = "SELECT * FROM Friends WHERE userID = %s"
     try:
         cur = conn.cursor()
-        cur.execute(sql, (user_id,))
+        cur.execute(sql, (userId,))
         results = cur.fetchall()
         return results
         
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
-def select_user_by_email(conn,friend_email):
+def selectUserByEmail(conn,friendEmail):
     sql = "SELECT * FROM Users WHERE email = %s"
     try:
         cur = conn.cursor()
-        cur.execute(sql, (friend_email,))
+        cur.execute(sql, (friendEmail,))
         return cur.fetchall()
     except (Exception, psycopg2.DatabaseError) as error:
             print(error)
-def get_all_photos(conn):
+def getAllPhotos(conn):
     cursor = conn.cursor()
     query = "SELECT upd, uad, caption, data, filepath FROM photos;"
     cursor.execute(query)
@@ -264,15 +264,15 @@ def get_all_photos(conn):
         photos.append(photo)
     print(photos)
     return photos            
-def delete_friend(conn, user_id, friend_id):
+def deleteFriend(conn, userId, friendId):
     sql = "DELETE FROM Friends WHERE userID = %s AND friend = %s"
     try:
         cur = conn.cursor()
-        cur.execute(sql, (user_id, friend_id))
+        cur.execute(sql, (userId, friendId))
         conn.commit()
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
-def insert_album(conn, uad, name, uid, doc):
+def insertAlbum(conn, uad, name, uid, doc):
     sql = """
     INSERT INTO Albums (uad, name, uid, doc)
     VALUES (%s, %s, %s, %s)
@@ -284,7 +284,7 @@ def insert_album(conn, uad, name, uid, doc):
         conn.commit()
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
-def select_album_by_uad(conn, uad):
+def selectAlbumByUad(conn, uad):
     sql = "SELECT * FROM Albums WHERE uad = %s"
     try:
         cur = conn.cursor()
@@ -293,7 +293,7 @@ def select_album_by_uad(conn, uad):
         return result
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
-def select_albums_by_uid(conn, uid):
+def selectAlbumsByUid(conn, uid):
     sql = "SELECT * FROM Albums WHERE uid = %s"
     try:
         cur = conn.cursor()
@@ -302,7 +302,7 @@ def select_albums_by_uid(conn, uid):
         return results
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
-def delete_album(conn, uad):
+def deleteAlbum(conn, uad):
     sql = "DELETE FROM Albums WHERE uad = %s"
     try:
         cur = conn.cursor()
@@ -310,7 +310,7 @@ def delete_album(conn, uad):
         conn.commit()
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
-def get_all_photos_for_album(conn, uad):
+def getAllPhotosForAlbum(conn, uad):
     sql = "SELECT * FROM Photos WHERE uad = %s"
 
     try:
@@ -322,7 +322,7 @@ def get_all_photos_for_album(conn, uad):
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
 
-def insert_photo(conn, upd, uad, caption, data,filename):
+def insertPhoto(conn, upd, uad, caption, data,filename):
     sql = """
     INSERT INTO Photos (upd, uad, caption, data, filepath)
     VALUES (%s, %s, %s, %s,%s)
@@ -335,7 +335,7 @@ def insert_photo(conn, upd, uad, caption, data,filename):
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
 # Select a photo by upd (unique photo id)
-def select_photo_by_upd(conn, upd):
+def selectPhotoByUpd(conn, upd):
     sql = "SELECT * FROM Photos WHERE upd = %s"
     try:
         cur = conn.cursor()
@@ -346,7 +346,7 @@ def select_photo_by_upd(conn, upd):
         print(error)
 
 # Select all photos by uad (unique album id)
-def select_photos_by_uad(conn, uad):
+def selectPhotosByUad(conn, uad):
     sql = "SELECT * FROM Photos WHERE uad = %s"
     try:
         cur = conn.cursor()
@@ -355,7 +355,7 @@ def select_photos_by_uad(conn, uad):
         return results
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
-def delete_photo(conn, upd):
+def deletePhoto(conn, upd):
     sql = "DELETE FROM Photos WHERE upd = %s"
     try:
         cur = conn.cursor()
@@ -363,19 +363,19 @@ def delete_photo(conn, upd):
         conn.commit()
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
-def insert_like(conn, upd, user_id, like_count):
+def insertLike(conn, upd, userId, likeCount):
     sql = """
-    INSERT INTO Likes (upd, user_id, like_count)
+    INSERT INTO Likes (upd, userId, likeCount)
     VALUES (%s, %s, %s)
     """
 
     try:
         cur = conn.cursor()
-        cur.execute(sql, (upd, user_id, like_count))
+        cur.execute(sql, (upd, userId, likeCount))
         conn.commit()
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
-def select_like_count_by_upd(conn, upd):
+def selectLikeCountByUpd(conn, upd):
     sql = "SELECT likecount FROM Likes WHERE upd = %s"
     try:
         cur = conn.cursor()
@@ -385,18 +385,18 @@ def select_like_count_by_upd(conn, upd):
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
 
-# Select like_count by user_id (unique user id)
-def select_like_count_by_user_id(conn, user_id):
-    sql = "SELECT likecount FROM Likes WHERE user_id = %s"
+# Select likeCount by userId (unique user id)
+def selectLikeCountByUserId(conn, userId):
+    sql = "SELECT likecount FROM Likes WHERE userId = %s"
     try:
         cur = conn.cursor()
-        cur.execute(sql, (user_id,))
+        cur.execute(sql, (userId,))
         results = cur.fetchall()
         return results
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
-# Increment like_count for a specific upd (unique photo id)
-def increment_like_count(conn, upd):
+# Increment likeCount for a specific upd (unique photo id)
+def incrementLikeCount(conn, upd):
     sql = "UPDATE Likes SET likecount = likecount + 1 WHERE upd = %s"
     try:
         cur = conn.cursor()
@@ -405,8 +405,8 @@ def increment_like_count(conn, upd):
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
 
-# Decrement like_count for a specific upd (unique photo id)
-def decrement_like_count(conn, upd):
+# Decrement likeCount for a specific upd (unique photo id)
+def decrementLikeCount(conn, upd):
     sql = "UPDATE Likes SET likecount = GREATEST(likecount - 1, 0) WHERE upd = %s"
     try:
         cur = conn.cursor()
@@ -414,7 +414,7 @@ def decrement_like_count(conn, upd):
         conn.commit()
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
-def insert_tag(conn, tag, upd):
+def insertTag(conn, tag, upd):
     sql = """
     INSERT INTO Tags (tag, upd)
     VALUES (%s, %s)
@@ -426,7 +426,7 @@ def insert_tag(conn, tag, upd):
         conn.commit()
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
-def select_tags_by_upd(conn, upd):
+def selectTagsByUpd(conn, upd):
     sql = "SELECT tag FROM Tags WHERE upd = %s"
     try:
         cur = conn.cursor()
@@ -435,7 +435,7 @@ def select_tags_by_upd(conn, upd):
         return results
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
-def insert_comment(conn, ucd, text, user_id, upd, dateleft):
+def insertComment(conn, ucd, text, userId, upd, dateleft):
     sql = """
     INSERT INTO Comments (ucd, text, userID, upd, dateleft)
     VALUES (%s, %s, %s, %s, %s)
@@ -443,20 +443,20 @@ def insert_comment(conn, ucd, text, user_id, upd, dateleft):
 
     try:
         cur = conn.cursor()
-        cur.execute(sql, (ucd, text, user_id, upd, dateleft))
+        cur.execute(sql, (ucd, text, userId, upd, dateleft))
         conn.commit()
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
-def select_comments_by_user_id(conn, user_id):
+def selectCommentsByUserId(conn, userId):
     sql = "SELECT text FROM Comments WHERE userID = %s"
     try:
         cur = conn.cursor()
-        cur.execute(sql, (user_id,))
+        cur.execute(sql, (userId,))
         results = cur.fetchall()
         return results
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
-def select_comments_by_upd(conn, upd):
+def selectCommentsByUpd(conn, upd):
     sql = "SELECT text FROM Comments WHERE upd = %s"
     try:
         cur = conn.cursor()
@@ -465,7 +465,7 @@ def select_comments_by_upd(conn, upd):
         return results
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
-def select_comments_by_date(conn, dateleft):
+def selectCommentsByDate(conn, dateleft):
     sql = "SELECT text FROM Comments WHERE dateleft = %s"
     try:
         cur = conn.cursor()
@@ -474,7 +474,7 @@ def select_comments_by_date(conn, dateleft):
         return results
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
-def recommend_friends(conn, user_id):
+def recommendFriends(conn, userId):
     sql = """
     SELECT DISTINCT f2.friend
     FROM Friends f1
@@ -486,12 +486,12 @@ def recommend_friends(conn, user_id):
 
     try:
         cur = conn.cursor()
-        cur.execute(sql, (user_id, user_id, user_id))
+        cur.execute(sql, (userId, userId, userId))
         results = cur.fetchall()
         return results
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
-def you_may_also_like(conn, photo_id):
+def youMayAlsoLike(conn, photoId):
     sql = """
     SELECT DISTINCT p2.*
     FROM Tags t1
@@ -502,12 +502,12 @@ def you_may_also_like(conn, photo_id):
 
     try:
         cur = conn.cursor()
-        cur.execute(sql, (photo_id, photo_id))
+        cur.execute(sql, (photoId, photoId))
         results = cur.fetchall()
         return results
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
-def search_photos_by_tags(conn, tag):
+def searchPhotosByTags(conn, tag):
     sql = """
     SELECT p.*
     FROM Photos p
@@ -522,7 +522,7 @@ def search_photos_by_tags(conn, tag):
         return results
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
-def search_comments_by_text(conn, text):
+def searchCommentsByText(conn, text):
     sql = "SELECT * FROM Comments WHERE text ILIKE %s"
 
     try:
@@ -533,7 +533,7 @@ def search_comments_by_text(conn, text):
             print(result)
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
-def get_top_tags(conn, limit):
+def getTopTags(conn, limit):
     sql = """
     SELECT tag, COUNT(*) as count
     FROM Tags
@@ -549,26 +549,31 @@ def get_top_tags(conn, limit):
         return results
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
-def select_photos_by_user_id(conn, user_id):
-    sql = "SELECT * FROM Photos WHERE userID = %s"
+def selectPhotosByUserId(conn, userId):
+    sql = """
+        SELECT Photos.* 
+        FROM Photos
+        JOIN Users ON Photos.uad = Users.uad
+        WHERE Users.uad = %s
+    """
     try:
         cur = conn.cursor()
-        cur.execute(sql, (user_id,))
+        cur.execute(sql, (userId,))
         results = cur.fetchall()
         return results
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
 
-def select_comments_by_user_id(conn, user_id):
+def selectCommentsByUserId(conn, userId):
     sql = "SELECT * FROM Comments WHERE userID = %s"
     try:
         cur = conn.cursor()
-        cur.execute(sql, (user_id,))
+        cur.execute(sql, (userId,))
         results = cur.fetchall()
         return results
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
 # Usage example
-if __name__ == "__main__":
-    conn = create_conn()
-    create_tables(conn)
+if __name__ == "_Main__":
+    conn = createConn()
+    createTables(conn)
