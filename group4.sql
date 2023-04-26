@@ -31,21 +31,21 @@ CREATE TABLE public.albums (
     doc date
 );
 
-INSERT INTO public.albums (uad, name, uid, doc) VALUES (1, 'Volcano Beats', 301, '2022-01-01');
+INSERT INTO public.albums (uad, name, uid, doc) VALUES (1, 'Volcanic Beats', 301, '2022-01-01');
 INSERT INTO public.albums (uad, name, uid, doc) VALUES (2, 'Jungle Grooves', 302, '2022-01-15');
-INSERT INTO public.albums (uad, name, uid, doc) VALUES (3, 'Savannah Sunrise', 303, '2022-02-01');
-INSERT INTO public.albums (uad, name, uid, doc) VALUES (4, 'Raging Rapids', 304, '2022-02-15');
+INSERT INTO public.albums (uad, name, uid, doc) VALUES (3, 'Savannah Suprise', 303, '2022-02-01');
+INSERT INTO public.albums (uad, name, uid, doc) VALUES (4, 'Annies Rapids', 304, '2022-02-15');
 INSERT INTO public.albums (uad, name, uid, doc) VALUES (5, 'Desert Mirage', 305, '2022-03-01');
-INSERT INTO public.albums (uad, name, uid, doc) VALUES (6, 'Tropical Thunder', 306, '2022-03-15');
-INSERT INTO public.albums (uad, name, uid, doc) VALUES (7, 'Mountain Whispers', 307, '2022-04-01');
-INSERT INTO public.albums (uad, name, uid, doc) VALUES (8, 'Lionheart', 308, '2022-04-15');
-INSERT INTO public.albums (uad, name, uid, doc) VALUES (9, 'Ocean Odyssey', 309, '2022-05-01');
-INSERT INTO public.albums (uad, name, uid, doc) VALUES (10, 'Chile Pepper Fusion', 310, '2022-05-15');
-INSERT INTO public.albums (uad, name, uid, doc) VALUES (11, 'Rhythm of the Rainforest', 311, '2022-06-01');
+INSERT INTO public.albums (uad, name, uid, doc) VALUES (6, 'Tinas Chicken Thighs', 306, '2022-03-15');
+INSERT INTO public.albums (uad, name, uid, doc) VALUES (7, 'Mountainious Whispers', 307, '2022-04-01');
+INSERT INTO public.albums (uad, name, uid, doc) VALUES (8, 'Various Animal Hearts', 308, '2022-04-15');
+INSERT INTO public.albums (uad, name, uid, doc) VALUES (9, 'Ocean Odyssey 2022 Trip', 309, '2022-05-01');
+INSERT INTO public.albums (uad, name, uid, doc) VALUES (10, 'Chile Pepper Fusion Resturant Design', 310, '2022-05-15');
+INSERT INTO public.albums (uad, name, uid, doc) VALUES (11, 'Rhythm of the Rainforest on BlueRay', 311, '2022-06-01');
 INSERT INTO public.albums (uad, name, uid, doc) VALUES (12, 'Prairie Pulse', 312, '2022-06-15');
-INSERT INTO public.albums (uad, name, uid, doc) VALUES (13, 'Celestial Safari', 313, '2022-07-01');
+INSERT INTO public.albums (uad, name, uid, doc) VALUES (13, 'MidJourney Suprise', 313, '2022-07-01');
 INSERT INTO public.albums (uad, name, uid, doc) VALUES (14, 'Aurora Borealis Ballet', 314, '2022-07-15');
-INSERT INTO public.albums (uad, name, uid, doc) VALUES (15, 'Wildfire Waltz', 315, '2022-08-01');
+INSERT INTO public.albums (uad, name, uid, doc) VALUES (15, 'Wildfire Resturant Trip 2022', 315, '2022-08-01');
 
 ALTER TABLE public.albums OWNER TO "rootUser";
 
