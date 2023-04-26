@@ -240,7 +240,8 @@ class HomePage:
             ("Friends", self.switchToFriends),
             ("Albums", self.switchToAlbums),
             ("Edit Profile", self.switchToProfile),
-            ("Trending Tags", self.switchToTrending)
+            ("Trending Tags", self.switchToTrending),
+            ("Friend Feed", self.switchToFriendFeed)
         ]
 
         for text, command in buttons:
@@ -410,7 +411,10 @@ class HomePage:
         self.master.withdraw()
         self.newWindow = tk.Toplevel(self.master)
         self.app = AlbumsPage(self.newWindow)
-
+    def switchToFriendFeed(self):
+        self.master.withdraw()
+        self.newWindow = tk.Toplevel(self.master)
+        self.app = FriendFeed(self.newWindow)
 
 class AlbumsPage:
     global userID
@@ -867,6 +871,9 @@ class Friends:
         #Setup Friend Box
         self.friendsListbox = tk.Listbox(master, width=50, height=15)
         self.friendsListbox.pack(pady=10)
+        #recommended box 
+        self.recommended_friends_listbox = tk.Listbox(master, width=50, height=15)
+        self.recommended_friends_listbox.pack(pady=10)
         #Call update list on every recall
         self.updateFriendsList()
         #Setup add friend button
@@ -878,7 +885,10 @@ class Friends:
         #back button
         backButton = tk.Button(master, text="Back", command=self.back, bg='#f0f0f0', width=15)
         backButton.pack(pady=10)
-
+        #recommend button 
+        recommend_button = tk.Button(master, text="Recommend Friends", command=self.recommend_friends, bg='#f0f0f0', width=15)
+        recommend_button.pack(pady=10)       
+        
     def back(self):
         self.master.withdraw()
         self.newWindow = tk.Toplevel(self.master)
@@ -933,6 +943,11 @@ class Friends:
                 self.updateFriendsList() #refresh
             else:
                 messagebox.showerror("Error", "Unable to find the selected user")
+    def recommend_friends(self, friends_of_friends=None):
+        friends = dba.select_friends_by_user_id(conn, userID)
+        for friend in friends: 
+            friends_of_friends = dba.select_friends_by_user_id(conn, userID)
+            self.recommended_friends_listbox.insert(tk.END, f"{friends_of_friends[1]}")
                    
 class UploadPhoto:
     global userID #Ensure we are searching the right user
