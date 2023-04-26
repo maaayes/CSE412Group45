@@ -581,6 +581,7 @@ class ViewAlbum:
             widget.destroy()
 
         self.loadPhotos()
+        
 class FriendFeed:
     global userID
     def __init__(self, master):
@@ -588,37 +589,172 @@ class FriendFeed:
         master.geometry("800x500")
         master.title("Friend Feed")
 
-        self.titleLabel = tk.Label(master, text="Friend Feed", font=("Helvetica", 16))
-        self.titleLabel.pack(pady=10)
+        self.title_label = tk.Label(master, text="Friend Feed", font=("Helvetica", 16))
+        self.title_label.pack(pady=10)
 
-        self.scrollbar = tk.Scrollbar(master)
-        self.scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+        feedFrame, feedCanvas = self.createFeedFrame(master)
+        feedFrame.pack(side='left', fill='both', expand=True, padx=10, pady=10)
+        #scrollBar helper func
+        scrollbar = self.createScrollbar(feedFrame, feedCanvas)
+        scrollbar.pack(side='right', fill='y')
 
-        self.feedListbox = tk.Listbox(master, yscrollcommand=self.scrollbar.set, width=80, height=20)
-        self.feedListbox.pack(pady=10)
+        innerFeedFrame = self.createInnerFeedFrame(feedCanvas)
+        self.addRandomImages(innerFeedFrame)
 
-        self.scrollbar.config(command=self.feedListbox.yview)
-
-        self.loadFriendFeed()
-
-        backButton = tk.Button(master, text="Back", command=self.back, bg='#f0f0f0', width=15)
-        backButton.pack(pady=10)
+        back_button = tk.Button(master, text="Back", command=self.back, bg='#f0f0f0', width=15)
+        back_button.pack(pady=10)
 
     def back(self):
         self.master.withdraw()
         self.newWindow = tk.Toplevel(self.master)
         self.app = HomePage(self.newWindow)
 
-    def loadFriendFeed(self):
-        # Fetch recent photo uploads from friends
-        recentUploads = dba.getFriendFeed(conn, userID)
+    #On click change
+    def updateScrollRegion(event):
+        feedCanvas.configure(scrollregion=feedCanvas.bbox("all")) 
+        innerFeedFrame.bind("<Configure>", updateScrollRegion) #bind is a cool function we binde configure so that on updateScrollRegion we change the innerframe contents
+        return innerFeedFrame
 
-        for upload in recentUploads:
-            friendName = upload[0]
-            photoName = upload[1]
-            uploadTime = upload[2]
+    #helper funciton sets up feed
+    def createFeedFrame(self, master):
+        feedFrame = ttk.Frame(master) #ttk is special library from tinkter with fun sub methods for building ui
+        feedCanvas = tk.Canvas(feedFrame, bg='white')
+        feedCanvas.pack(side='left', fill='both', expand=True)
+        return feedFrame, feedCanvas
+    #Create ScrolLBar
+    def createScrollbar(self, feedFrame, feedCanvas):
+        scrollbar = tk.Scrollbar(feedFrame, orient='vertical', command=feedCanvas.yview) #basic scrollbar setup orient vertical instead of horizontal
+        feedCanvas.configure(yscrollcommand=scrollbar.set)
+        feedCanvas.bind('<Configure>', lambda e: feedCanvas.configure(scrollregion=feedCanvas.bbox('all'))) #lambda means this is gonna run through all bbox in feedcanvas
+        return scrollbar
 
-            self.feedListbox.insert(tk.END, f"{friendName} uploaded '{photoName}' on {uploadTime}")
+    #within our feed we have an inner method that will hold the photos
+    def createInnerFeedFrame(self, feedCanvas):
+        innerFeedFrame = tk.Frame(feedCanvas, bg='white')
+        feedCanvas.create_window((0, 0), window=innerFeedFrame, anchor='nw')
+        return innerFeedFrame
+
+    #setup feed here by getting all the photos and randomly shufflying them
+    def configureFeed(self):
+        friend = dba.select_friends_by_user_id(conn, userID)
+        self.photoLocations = dba.select_photos_by_userid(conn, friend) #this is a cool call gets all photo info
+        random.shuffle(self.photoLocations)
+
+    #load photos from dba
+    def addRandomImages(self, innerFeedFrame):
+        self.photoLocations = dba.select_photos_by_userid(conn, friend) 
+        for photoInfo in self.photoLocations:
+            if photoInfo[userID] in friend:
+                print(photoInfo)
+                self.displayPhoto(innerFeedFrame, photoInfo) #iterate photos and siplay them
+
+    def displayPhoto(self, innerFeedFrame, photoInfo):
+        print(photoInfo)
+        photoId = photoInfo['upd']
+        photoPath = photoInfo['filepath']
+        caption = photoInfo['caption']
+        date = photoInfo['data']
+        #print(photoPath)
+        selectPhoto = dba.selectPhotoByUpd(conn, photoId)  #call photo upload feature
+
+        imageLabel = tk.Label(innerFeedFrame, bg='white', borderwidth=2, relief="groove")
+        imageLabel.image = self.loadImageFromPath(photoPath)
+        imageLabel.config(image=imageLabel.image)
+        imageLabel.pack(pady=10,anchor='center')
+       
+        likeButtonText = tk.StringVar()
+        likeButtonText.set("Like")
+        likeButton = tk.Button(innerFeedFrame, textvariable=likeButtonText, command=lambda: self.likePhoto(photoId, likeButtonText))
+        likeButton.pack()
+        # Add comment button and comment section
+        commentButton = tk.Button(innerFeedFrame, text="Comments", command=lambda: self.showCommentsPopup(photoId))
+        commentButton.pack()
+
+        # Add tags button and tag section
+        tagButton = tk.Button(innerFeedFrame, text="Tags", command=lambda: self.showTagsPopup(photoId))
+        tagButton.pack()
+
+        captionLabel = tk.Label(innerFeedFrame, text=caption, font=("Helvetica", 10, "bold"), bg='white', wraplength=200, justify='center')
+        captionLabel.pack()
+
+        dateLabel = tk.Label(innerFeedFrame, text=date, font=("Helvetica", 8), bg='white')
+        dateLabel.pack()
+
+    # Like photo method
+    def likePhoto(self, photoId,likeButtonText):
+         if likeButtonText.get() == "Like":
+            
+            dba.incrementLikeCount(conn, photoId)
+            likeButtonText.set("Unlike")
+         else:
+          
+            dba.decrementLikeCount(conn, photoId)
+            likeButtonText.set("Like")
+
+    # Show comments popup
+    def showCommentsPopup(self, photoId):
+        
+        comments = dba.selectCommentsByUpd(conn,photoId)
+        commentsPopup = tk.Toplevel()
+        commentsPopup.title("Comments")
+
+    # Create a Listbox to display the comments
+        commentsListbox = tk.Listbox(commentsPopup, width=50, height=10)
+        commentsListbox.pack()
+
+    # Display existing comments
+        if(len(comments) > 1):
+            for comment in comments:
+        # Add each comment to the Listbox
+                commentsListbox.insert(tk.END, comment)
+
+    # Add new comment entry and submit button
+        newCommentEntry = tk.Entry(commentsPopup)
+        newCommentEntry.pack()
+
+        submitCommentButton = tk.Button(commentsPopup, text="Submit Comment", command=lambda: self.submitComment(photoId, newCommentEntry.get()))
+        submitCommentButton.pack()
+
+    # Submit comment method
+    def submitComment(self, photoId, commentText):
+        x = random.randint(0,500000)
+        dba.insertComment(conn,x,commentText,userID,photoId,datetime.datetime.now().strftime("%Y-%m-%d"))
+        if hasattr(self, 'commentsPopup') and self.commentsPopup:
+            self.commentsPopup.destroy()
+        self.showCommentsPopup(photoId)
+
+    def showTagsPopup(self, photoId):
+        if hasattr(self, 'tagsPopup') and self.tagsPopup:
+            self.tagsPopup.destroy()
+        tagsPopup = tk.Toplevel()
+        tagsPopup.title("Tags")
+    
+        tagsListbox = tk.Listbox(tagsPopup, width=50, height=10)
+        tagsListbox.pack()
+
+        tags = dba.selectTagsByUpd(conn, photoId)
+        for tag in tags:
+            tagsListbox.insert(tk.END, tag)
+
+        newTagEntry = tk.Entry(tagsPopup)
+        newTagEntry.pack()
+
+        submitTagButton = tk.Button(tagsPopup, text="Submit Tag", command=lambda: self.submitTag(photoId, newTagEntry.get()))
+        submitTagButton.pack()
+
+    # Submit tag method
+    def submitTag(self, photoId, tagText):
+        dba.insertTag(conn,tagText,photoId)
+        self.showTagsPopup(photoId)
+        
+    def loadImageFromPath(self, filepath):
+        from PIL import Image, ImageTk
+
+        img = Image.open(filepath)
+        self.master.update()
+        img = img.resize((int(self.master.winfo_width() / 4), int(self.master.winfo_height() / 4)), Image.LANCZOS)
+        return ImageTk.PhotoImage(img)
+    
 class MyProfile:
     def __init__(self, master):
         self.master = master
