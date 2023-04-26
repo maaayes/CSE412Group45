@@ -22,6 +22,7 @@ def create_tables(conn):
             gender VARCHAR,
             password VARCHAR,
             albumNum INTEGER,
+            contribution_score INTEGER,
             PRIMARY KEY (userID),
             UNIQUE (userID)
         )
@@ -89,14 +90,14 @@ def create_tables(conn):
     finally:
         if conn is not None:
             conn.close()
-def insert_user(user_id, fname, lname, email, dob, hometown, gender, password, album_num,conn):
+def insert_user(user_id, fname, lname, email, dob, hometown, gender, password, album_num, contribution_score, conn):
     sql = """
-    INSERT INTO Users (userID, fname, lname, email, dob, hometown, gender, password, albumNum)
-    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+    INSERT INTO Users (userID, fname, lname, email, dob, hometown, gender, password, albumNum, contribution_score)
+    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, 0)
     """
     try:
         cur = conn.cursor()
-        cur.execute(sql, (user_id, fname, lname, email, dob, hometown, gender, password, album_num))
+        cur.execute(sql, (user_id, fname, lname, email, dob, hometown, gender, password, album_num, contribution_score))
         conn.commit()
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
@@ -237,6 +238,15 @@ def select_friends_by_user_id(conn, user_id):
         
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
+def select_user_by_email(conn,friend_email):
+    sql = "SELECT * FROM Users WHERE email = %s"
+    try:
+        cur = conn.cursor()
+        cur.execute(sql, (friend_email,))
+        return cur.fetchall()
+    except (Exception, psycopg2.DatabaseError) as error:
+            print(error)
+            
 def delete_friend(conn, user_id, friend_id):
     sql = "DELETE FROM Friends WHERE userID = %s AND friend = %s"
     try:
@@ -527,6 +537,35 @@ def select_photos_by_user_id(conn, user_id):
     try:
         cur = conn.cursor()
         cur.execute(sql, (user_id,))
+        results = cur.fetchall()
+        return results
+    except (Exception, psycopg2.DatabaseError) as error:
+        print(error)
+        
+def inc_contribution_score(conn, user_id, contribution_score):
+    sql = "UPDATE Users SET contribution_score = contribution_score + 1;"
+    try:
+        cur = conn.cursor()
+        cur.execute(sql, (user_id, contribution_score))
+        results = cur.fetchall()
+        return results
+    except (Exception, psycopg2.DatabaseError) as error:
+        print(error)
+def dec_contribution_score(conn, user_id, contribution_score):
+    sql = "UPDATE Users SET contribution_score = contribution_score - 1;"
+    try:
+        cur = conn.cursor()
+        cur.execute(sql, (user_id, contribution_score))
+        results = cur.fetchall()
+        return results
+    except (Exception, psycopg2.DatabaseError) as error:
+        print(error)
+        
+def show_contribution_score(conn, user_id, contribution_score):
+    sql = "SELECT contribution_score FROM Users WHERE user_id = %s;"
+    try:
+        cur = conn.cursor()
+        cur.execute(sql, (user_id, contribution_score))
         results = cur.fetchall()
         return results
     except (Exception, psycopg2.DatabaseError) as error:
