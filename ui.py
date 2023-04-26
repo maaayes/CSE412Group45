@@ -242,7 +242,8 @@ class HomePage:
             ("Edit Profile", self.switchToProfile),
             ("Trending Tags", self.switchToTrending),
             ("Recommended Friends", self.switch_to_rec),
-            ("Contribution Score", self.switch_to_cs)
+            ("Contribution Score", self.switch_to_cs),
+            ("Friend Feed", self.switchToFriendFeed)
         ]
 
         for text, command in buttons:
@@ -423,7 +424,10 @@ class HomePage:
         self.master.withdraw()
         self.newWindow = tk.Toplevel(self.master)
         self.app = ContributionScore(self.newWindow)
-
+    def switchToFriendFeed(self):
+        self.master.withdraw()
+        self.newWindow = tk.Toplevel(self.master)
+        self.app = FriendFeed(self.newWindow)
 
 class AlbumsPage:
     global userID
