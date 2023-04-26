@@ -197,7 +197,7 @@ class HomePage:
     def __init__(self, master):
         self.master = master
         master.geometry("800x500")
-        master.title("User Home Page")
+        master.title("User xHome Page")
         self.photo_locations = []
         self.create_ui_elements(master)
         self.configure_feed()
@@ -207,16 +207,27 @@ class HomePage:
         custom_font = ("Helvetica", 12, "bold")
 
         button_frame = self.create_button_frame(master, custom_font)
-        button_frame.pack(side='right', fill='y', padx=10, pady=10)
 
         feed_frame, feed_canvas = self.create_feed_frame(master)
         feed_frame.pack(side='left', fill='both', expand=True, padx=10, pady=10)
 
         scrollbar = self.create_scrollbar(feed_frame, feed_canvas)
-        scrollbar.pack(side='left', fill='y')
+        scrollbar.pack(side='right', fill='y')
 
         inner_feed_frame = self.create_inner_feed_frame(feed_canvas)
         self.add_random_images(inner_feed_frame)
+
+        # Pack the button_frame after all other elements are created and packed
+        button_frame.pack(side='right', fill='y', padx=10, pady=10)
+
+    def create_inner_feed_frame(self, feed_canvas):
+        inner_feed_frame = Frame(feed_canvas, bg="white")
+        feed_canvas.create_window(0, 0, window=inner_feed_frame, anchor='n')  # Set anchor to 'n'
+    
+    def update_scroll_region(event):
+        feed_canvas.configure(scrollregion=feed_canvas.bbox("all")) 
+        inner_feed_frame.bind("<Configure>", update_scroll_region)
+        return inner_feed_frame
 
     def create_button_frame(self, master, custom_font):
         button_bg = "#007BFF"
